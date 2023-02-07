@@ -4,7 +4,10 @@ metal:
       hosts:
         metal0: {ansible_host: 192.168.50.10, mac: 'b8:85:84:b5:95:94', disk: nvme0n1, network_interface: eno1}
 
-
+    workers:
+      hosts:
+        metal1: {ansible_host: 192.168.50.11, disk: nvme0n1, network_interface: eno1}
+        # metal2: {ansible_host: 192.168.50.12, disk: nvme0n1, network_interface: eno1}
 
 
 
