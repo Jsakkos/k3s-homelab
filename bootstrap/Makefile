@@ -10,6 +10,6 @@ namespace:
 argocd:
 	cd argocd && ./apply.sh
 
-.PHONY: root
-root:
-	cd root && ./apply.sh
+#.PHONY: root
+#root:
+#	cd root && ./apply.sh

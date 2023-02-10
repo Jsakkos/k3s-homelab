@@ -1,5 +1,5 @@
 gitops:
-  repo: http://gitea-http.gitea:3000/ops/homelab
+  repo: https://github.com/Jsakkos/k3s-homelab
   revision: master
 stacks:
   - name: bootstrap
