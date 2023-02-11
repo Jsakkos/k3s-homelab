@@ -32,9 +32,9 @@
       length: 32
       special: true
 
-- path: paperless-ngx
+- path: paperless-ngx/db
   data:
-    - key: db_password
+    - key: password
       length: 32
       special: true
 

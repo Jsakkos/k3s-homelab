@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: HelmRelease
+metadata:
+  name: paperless-ngx-postgresql
+  namespace: paperless
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: postgresql
+      version: 11.9.13
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-charts
+        namespace: argocd
+      interval: 5m
+  values:
+    auth:
+      username: paperless-ngx
+      password:
+        - existingSecret: paperless-ngx-db-secret
+      database: paperless-ngx
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: paperless-ngx-postgresql
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
