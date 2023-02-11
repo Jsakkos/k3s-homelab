@@ -25,3 +25,16 @@
     - key: token
       length: 32
       special: false
+# Paperless
+- path: paperless-ngx
+  data:
+    - key: secret_key
+      length: 32
+      special: true
+
+- path: paperless-ngx
+  data:
+    - key: db_password
+      length: 32
+      special: true
+
