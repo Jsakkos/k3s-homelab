@@ -86,12 +86,10 @@ app-template:
       enabled: true
       mountPath: /mnt/paperless
       existingClaim: paperless-ngx-data
-      path: /volume1/paperless/data
     inbox:
       enabled: true
       mountPath: /mnt/inbox
       existingClaim: paperless-ngx-data
-      path: /volume1/paperless/consume
  #   notifier:
  #     enabled: true
  #     type: configMap
