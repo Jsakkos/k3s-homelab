@@ -1,6 +1,6 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: HelmRelease
+kind: Application
 metadata:
   name: paperless
   namespace: argocd
