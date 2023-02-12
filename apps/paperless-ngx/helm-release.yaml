@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: HelmRelease
 metadata:
   name: paperless
-  namespace: paperless
+  namespace: argocd
 spec:
   interval: 5m
   chart:
