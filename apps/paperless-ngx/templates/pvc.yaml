@@ -21,7 +21,7 @@ metadata:
   namespace: paperless
 spec:
   volumeName: paperless-ngx-static-pv
-  storageClassName: nfc
+  storageClassName: nfs
   accessModes:
   - ReadWriteMany
   resources:
