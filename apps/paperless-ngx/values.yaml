@@ -80,18 +80,18 @@ app-template:
   persistence:
     data:
       enabled: true
-      existingClaim: paperless
+      storageClass: longhorn
       mountPath: /usr/src/paperless/data
     media:
       enabled: true
       mountPath: /mnt/paperless
-      type: nfs
-      path: /volume1/paperless
+      existingClaim: paperless-ngx-data
+      path: /volume1/paperless/data
     inbox:
       enabled: true
       mountPath: /mnt/inbox
-      type: nfs
-      path: /volume1/paperless_inbox
+      existingClaim: paperless-ngx-data
+      path: /volume1/paperless/consume
  #   notifier:
  #     enabled: true
  #     type: configMap
