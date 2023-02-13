@@ -1,27 +1,18 @@
-# Create a pod that reads and writes to the
-# NFS server via an NFS volume.
-
-kind: Pod
 apiVersion: v1
+kind: Pod
 metadata:
-  name: pod-using-nfs
+  name: nfs-pod
 spec:
-
-  # In this container, we'll mount the NFS volume
-  # and write the date to a file inside it.
   containers:
-    - name: app
-      image: alpine
-
-      # Mount the NFS volume in the container
-      persistence:
-        data:
-          enabled: true
-          mountPath: /var/nfs
-          type: nfs
-          server: "192.168.1.89"
-          path: /volume1/Docs/paperless
-
+    - name: nfs-container
+      image: nginx
+      volumeMounts:
+        - name: nfs-volume
+          mountPath: "/mnt/nfs"
+  volumes:
+    - name: nfs-volume
+      persistentVolumeClaim:
+        claimName: nfs-pvc
       # Write to a file inside our NFS
       command: ["/bin/sh"]
-      args: ["-c", "while true; do date >> /var/nfs/dates.txt; sleep 5; done"] 
+      args: ["-c", "while true; do date >> /mnt/nfs/dates.txt; sleep 5; done"] 
