@@ -4,4 +4,4 @@ version: 0.0.0
 dependencies:
   - name: csi-driver-nfs
   - version: v4.1.0
-  - repository: https://github.com/kubernetes-csi/csi-driver-nfs
+  - repository: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
