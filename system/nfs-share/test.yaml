@@ -19,26 +19,3 @@ spec:
     - name: nfs-share
       persistentVolumeClaim:
         claimName: nfs-share-pvc
----
-kind: Pod
-apiVersion: v1
-metadata:
-  name: test-pod2
-spec:
-  containers:
-  - name: test-pod2
-    image: busybox:stable
-    command:
-      - "/bin/sh"
-    args:
-      - "-c"
-      - "touch /mnt/SUCCESS && exit 0 || exit 1"
-    volumeMounts:
-      - name: nfs-share
-        mountPath: "/mnt"
-        path: /volume1/k3s/paperless
-  restartPolicy: "Never"
-  volumes:
-    - name: nfs-share
-      persistentVolumeClaim:
-        claimName: nfs-share-pvc
