@@ -84,11 +84,11 @@ app-template:
     media:
       enabled: true
       mountPath: /mnt/paperless
-      storageClass: nfs-client
+      existingClaim: paperless-media-pvc
     inbox:
       enabled: true
       mountPath: /mnt/inbox
-      storageClass: nfs-client
+      existingClaim: paperless-consume-pvc
  #   notifier:
  #     enabled: true
  #     type: configMap
