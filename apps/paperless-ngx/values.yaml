@@ -1,86 +1,72 @@
 app-template:
-  metadata:
-    name: paperless
-    namespace: paperless
-  controller:
-    annotations:
-      reloader.stakater.com/auto: "true"
-    type: statefulset
-    replicas: 1
-  image:
-    repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 1.12.2
-  volumeMounts:
-    - name: inbox
-      mountPath: "/mnt/inbox"
-    - name: media
-      mountPath: "/mnt/paperless"
   env:
     COMPOSE_PROJECT_NAME: paperless
     PAPERLESS_CONSUMER_POLLING: "60"
     PAPERLESS_CONSUMER_RECURSIVE: "true"
     PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
-    PAPERLESS_OCR_LANGUAGES: eng
-    PAPERLESS_OCR_LANGUAGE: eng
-    PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
-    PAPERLESS_PORT: 8000
-    PAPERLESS_REDIS: redis://redis.redis.svc.cluster.local:6379
-    PAPERLESS_TIKA_ENABLED: 1
-    PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg.gotenberg.svc.cluster.local:3000
-    PAPERLESS_TIKA_ENDPOINT: http://tika.tika.svc.cluster.local:9998
-    PAPERLESS_TASK_WORKERS: 2
-    PAPERLESS_TIME_ZONE: "America/Los_Angeles"
     PAPERLESS_CONSUMPTION_DIR: /mnt/inbox
+    PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
     PAPERLESS_MEDIA_ROOT: /mnt/paperless
+    PAPERLESS_OCR_LANGUAGE: eng
+    PAPERLESS_OCR_LANGUAGES: eng
+    PAPERLESS_PORT: 8000
     PAPERLESS_POST_CONSUME_SCRIPT: /mnt/scripts/pushover-notifier.sh
-    USERMAP_UID: 1028
+    PAPERLESS_REDIS: redis://redis.redis.svc.cluster.local:6379
+    PAPERLESS_TASK_WORKERS: 2
+    PAPERLESS_TIKA_ENABLED: 1
+    PAPERLESS_TIKA_ENDPOINT: http://tika.tika.svc.cluster.local:9998
+    PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg.gotenberg.svc.cluster.local:3000
+    PAPERLESS_TIME_ZONE: America/Los_Angeles
     USERMAP_GID: 100
-
+    USERMAP_UID: 1028
   envFrom:
-    - secretRef:
-        name: paperless-secret
-
+  - secretRef:
+      name: paperless-secret
+  image:
+    repository: ghcr.io/paperless-ngx/paperless-ngx
+    tag: 1.12.2
+  ingress:
+    main:
+      annotations:
+        hajimari.io/appName: Paperless
+        hajimari.io/enable: "true"
+        hajimari.io/icon: file-document
+        hajimari.io/info: Document management system that transforms your physical
+          documents into a searchable online archive
+      enabled: true
+      hosts:
+      - host: paperless.toolstowelsandfroods.com
+        paths:
+        - path: /
+          pathType: Prefix
+      ingressClassName: nginx
+      tls:
+      - hosts:
+        - paperless.toolstowelsandfroods.com
+        secretName: paperless-tls-certificate
+  persistence:
+    data:
+      mountPath: /usr/src/paperless/data
+      storageClass: longhorn
+    inbox:
+      enabled: true
+      existingClaim: paperless-consume-pvc
+      mountPath: /mnt/inbox
+    media:
+      enabled: true
+      existingClaim: paperless-media-pvc
+      mountPath: /mnt/paperless
+  podSecurityContext:
+    fsGroup: 100
+    fsGroupChangePolicy: OnRootMismatch
+  resources:
+    limits:
+      memory: 6572M
+    requests:
+      cpu: 23m
+      memory: 2975M
   service:
     main:
       ports:
         http:
           port: 8000
-
-  ingress:
-    main:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        hajimari.io/enable: "true"
-        hajimari.io/icon: file-document
-        hajimari.io/appName: Paperless
-        hajimari.io/info: Document management system that transforms your physical documents into a searchable online archive
-      hosts:
-       - host: &host paperless.toolstowelsandfroods.com
-         paths:
-           - path: /
-             pathType: Prefix
-      tls:
-        - secretName: paperless-tls-certificate
-          hosts:
-            - *host
-  podSecurityContext:
-    fsGroup: 100
-    fsGroupChangePolicy: "OnRootMismatch"
-
-  volumes:
-    - name: data
-      storageClass: longhorn
-      mountPath: /usr/src/paperless/data
-    - name: media
-      persistentVolumeClaim: 
-        claimName: paperless-media-pvc
-   - name: inbox
-      persistentVolumeClaim: 
-        claimName: paperless-consume-pvc
-  resources:
-    requests:
-      cpu: 23m
-      memory: 2975M
-    limits:
-      memory: 6572M
