@@ -1,4 +1,2 @@
-- name: Install NFS-common
-  apt:
-    pkg:
-    -  nfs-common
+- name: install nfs client
+  action: apt pkg=nfs-common state=present
