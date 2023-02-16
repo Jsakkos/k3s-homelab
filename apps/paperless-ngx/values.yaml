@@ -39,10 +39,11 @@ app-template:
     PAPERLESS_POST_CONSUME_SCRIPT: /mnt/scripts/pushover-notifier.sh
     USERMAP_UID: 1028
     USERMAP_GID: 100
-
-  envFrom:
-    - secretRef:
-        name: paperless-secret
+    PAPERLESS_ADMIN_USER: paperless_admin
+    PAPERLESS_ADMIN_PASSWORD: 
+      existingSecret: paperless-admin-secret
+    PAPERLESS_SECRET_KEY: 
+      existingSecret: paperless-secret-key
 
   service:
     main:
