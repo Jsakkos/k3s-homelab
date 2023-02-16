@@ -1,4 +1,9 @@
 app-template:
+  controller:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    type: statefulset
+    replicas: 1
   image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
     tag: 1.12.2
