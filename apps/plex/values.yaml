@@ -16,17 +16,16 @@ app-template:
       main:
         enabled: true
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
           hajimari.io/enable: 'true'
           hajimari.io/icon: plex
           hajimari.io/appName: Plex
           hajimari.io/info: Stream movies and tv
         ingressClassName: nginx
-  podSecurityContext:
-    runAsUser: 1028
-    runAsGroup: 100
-    fsGroup: 100
-    fsGroupChangePolicy: "OnRootMismatch"
+    podSecurityContext:
+      runAsUser: 1028
+      runAsGroup: 100
+      fsGroup: 100
+      fsGroupChangePolicy: "OnRootMismatch"
 
     persistence:
       config:
