@@ -2,34 +2,34 @@ app-template:
   image:
     repository: ghcr.io/onedr0p/plex
     tag: 1.30.2.6563-3d4dc0cce@sha256:d0d3e5e75f5ed86843d123cd84bb1f54a0593ec26c908410548862607af880bf
-
-    service:
-      main:
-        type: LoadBalancer
-        externalTrafficPolicy: Local
-        ports:
-          http:
-            port: 32400
-
+  controller:
+    replicas: 1
+    type: statefulset
+  env:
+    TZ: America/Los_Angeles
+  service:
+    main:
+      enabled: true
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      ports:
+        http:
+          port: 32400
     ingress:
       main:
         enabled: true
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-prod
           hajimari.io/enable: 'true'
-          hajimari.io/icon: video-vintage
+          hajimari.io/icon: plex
           hajimari.io/appName: Plex
           hajimari.io/info: Stream movies and tv
         ingressClassName: nginx
-        hosts:
-          - host: &host plex.toolstowelsandfroods.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: plex-tls-certificate
-            hosts:
-              - *host
+  podSecurityContext:
+    runAsUser: 1028
+    runAsGroup: 100
+    fsGroup: 100
+    fsGroupChangePolicy: "OnRootMismatch"
 
     persistence:
       config:
