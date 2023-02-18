@@ -26,7 +26,7 @@ app-template:
         hajimari.io/info: Stream movies and tv
       ingressClassName: nginx
       hosts:
-        - host: plex.toolstowelsandfroods.com
+        - host: &host plex.toolstowelsandfroods.com
           paths:
             - path: /
               pathType: Prefix
