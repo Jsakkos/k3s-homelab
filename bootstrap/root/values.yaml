@@ -8,3 +8,4 @@ stacks:
   - name: platform
   - name: apps
   - name: automation
+  - name: storage

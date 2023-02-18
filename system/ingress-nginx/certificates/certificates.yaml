@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: toolstowelsandfroods.com
+  namespace: networking
+spec:
+  secretName: toolstowelsandfroods-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: toolstowelsandfroods.com
+  dnsNames:
+    - toolstowelsandfroods.com
+    - '*.toolstowelsandfroods.com'
