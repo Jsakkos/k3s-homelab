@@ -6,8 +6,5 @@ ingress-nginx:
       enabled: true
       serviceMonitor:
         enabled: true
-    extraArgs:
-      default-ssl-certificate: |-
-        networking/toolstowelsandfroods-com-tls
   tcp:
     22: gitea/gitea-ssh:22
