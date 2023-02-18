@@ -2,6 +2,9 @@ app-template:
   image:
     repository: ghcr.io/onedr0p/plex
     tag: 1.31.0.6654-02189b09f
+  controller:
+    replicas: 1
+    type: statefulset
   env:
     TZ: America/Los_Angeles
   service:
@@ -12,15 +15,15 @@ app-template:
       ports:
         http:
           port: 32400
-    ingress:
-      main:
-        enabled: true
-        annotations:
-          hajimari.io/enable: 'true'
-          hajimari.io/icon: plex
-          hajimari.io/appName: Plex
-          hajimari.io/info: Stream movies and tv
-        ingressClassName: nginx
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        hajimari.io/enable: 'true'
+        hajimari.io/icon: plex
+        hajimari.io/appName: Plex
+        hajimari.io/info: Stream movies and tv
+      ingressClassName: nginx
     podSecurityContext:
       runAsUser: 1028
       runAsGroup: 100
