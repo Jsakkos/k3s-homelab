@@ -19,11 +19,21 @@ app-template:
     main:
       enabled: true
       annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod  
         hajimari.io/enable: 'true'
         hajimari.io/icon: plex
         hajimari.io/appName: Plex
         hajimari.io/info: Stream movies and tv
       ingressClassName: nginx
+    hosts:
+       - host: &host plex.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: plex-tls-certificate
+          hosts:
+            - *host
     podSecurityContext:
       runAsUser: 1028
       runAsGroup: 100
