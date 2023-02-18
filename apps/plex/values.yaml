@@ -35,9 +35,9 @@ app-template:
           hosts:
             - *host
     podSecurityContext:
-      runAsUser: 1028
-      runAsGroup: 100
-      fsGroup: 100
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
       fsGroupChangePolicy: "OnRootMismatch"
 
     persistence:
