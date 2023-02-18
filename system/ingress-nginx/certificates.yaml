@@ -3,8 +3,8 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: toolstowelsandfroods.com
-  namespace: networking
-spec:
+  namespace: ingress-nginx
+  spec:
   secretName: toolstowelsandfroods-com-tls
   issuerRef:
     name: letsencrypt-production
