@@ -42,8 +42,8 @@ app-template:
     PAPERLESS_CONSUMPTION_DIR: /mnt/inbox
     PAPERLESS_MEDIA_ROOT: /mnt/paperless
     PAPERLESS_POST_CONSUME_SCRIPT: /mnt/scripts/pushover-notifier.sh
-    USERMAP_UID: 1028
-    USERMAP_GID: 100
+    USERMAP_UID: 1000
+    USERMAP_GID: 1000
     PAPERLESS_ADMIN_USER: paperless_admin
     PAPERLESS_ADMIN_PASSWORD:
       valueFrom:
