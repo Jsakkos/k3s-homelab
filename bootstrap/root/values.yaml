@@ -9,3 +9,4 @@ stacks:
   - name: apps
   - name: automation
   - name: storage
+  - name: monitoring
