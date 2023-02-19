@@ -34,7 +34,6 @@ app-template:
       ingressClassName: nginx
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
         hajimari.io/enable: "true"
         hajimari.io/icon: home-assistant
         hajimari.io/appName: Home Assistant
