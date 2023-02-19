@@ -7,23 +7,6 @@ app-template:
   image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
     tag: 1.12.2
-
-#  initContainers:
-#    copy-scripts:
-#      image: ubuntu:22.04
-#      command:
-#        - /bin/bash
-#        - -c
-#        - |
-#          cp /scripts/pushover-notifier.sh /mnt/scripts
-#          chmod +x /mnt/scripts/*
-#      volumeMounts:
-#        - name: scripts
-#          mountPath: /mnt/scripts
-#        - name: notifier
-#          mountPath: /scripts/pushover-notifier.sh
-#          subPath: pushover-notifier.sh
-
   env:
     COMPOSE_PROJECT_NAME: paperless
     PAPERLESS_CONSUMER_POLLING: "60"
@@ -68,12 +51,10 @@ app-template:
       ingressClassName: nginx
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod     
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         hajimari.io/enable: "true"
         hajimari.io/icon: file-document
         hajimari.io/appName: Paperless
         hajimari.io/info: Document management system that transforms your physical documents into a searchable online archive
-        
       hosts:
        - host: &host paperless.toolstowelsandfroods.com
          paths:
@@ -99,17 +80,6 @@ app-template:
       enabled: true
       mountPath: /mnt/inbox
       existingClaim: paperless-consume-pvc
- #   notifier:
- #     enabled: true
- #     type: configMap
- #     name: pushover-notifier
- #     subPath: pushover-notifier.sh
- #     mountPath: /scripts/pushover-notifier.sh
- #     readOnly: true
- #   scripts:
- #     enabled: true
- #     type: emptyDir
- #     mountPath: /mnt/scripts
 
   resources:
     requests:
