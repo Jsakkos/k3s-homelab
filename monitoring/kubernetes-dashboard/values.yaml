@@ -22,6 +22,10 @@ labels: {}
 
 ## Additional container arguments
 ##
+extraArgs:
+  - --enable-skip-login
+  - --disable-settings-authorizer
+  - --enable-insecure-login
 # extraArgs:
 #   - --enable-skip-login
 #   - --enable-insecure-login
@@ -119,31 +123,6 @@ resources:
 ## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
 protocolHttp: false
 
-service:
-  type: ClusterIP
-  # Dashboard service port
-  externalPort: 443
-
-  ## LoadBalancerSourcesRange is a list of allowed CIDR values, which are combined with ServicePort to
-  ## set allowed inbound rules on the security group assigned to the master load balancer
-  # loadBalancerSourceRanges: []
-
-  # clusterIP: ""
-
-  ## A user-specified IP address for load balancer to use as External IP (if supported)
-  # loadBalancerIP:
-
-  ## Additional Kubernetes Dashboard Service annotations
-  annotations: {}
-
-  ## Here labels can be added to the Kubernetes Dashboard service
-  labels: {}
-
-  ## Enable or disable the kubernetes.io/cluster-service label. Should be disabled for GKE clusters >=1.15.
-  ## Otherwise, the addon manager will presume ownership of the service and try to delete it.
-  clusterServiceLabel:
-    enabled: true
-    key: "kubernetes.io/cluster-service"
 
 ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
@@ -152,9 +131,12 @@ ingress:
   ingressClassName: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    hajimari.io/enable: 'true'
+    nginx.ingress.kubernetes.io/whitelist-source-range: |
+      10.0.0.0/8,172.16.0.0/12,192.168.50.0/24,192.168.1.0/24
+    hajimari.io/icon: mdi:kubernetes
+    
   hosts:
-    - host: &host dash.toolstowelsandfroods.com
+    - host: &host kubernetes.toolstowelsandfroods.com
       paths:
         - path: /
           pathType: Prefix
@@ -162,60 +144,6 @@ ingress:
     - secretName: kubernetes-dashboard-tls-certificate
       hosts:
         - *host
-  ## Kubernetes Dashboard Ingress labels
-  # labels:
-  #   key: value
-
-  ## Kubernetes Dashboard Ingress annotations
-  # annotations:
-  #   kubernetes.io/ingress.class: nginx
-  #   kubernetes.io/tls-acme: 'true'
-
-  ## If you plan to use TLS backend with enableInsecureLogin set to false
-  ## (default), you need to uncomment the below.
-  ## If you use ingress-nginx < 0.21.0
-  #   nginx.ingress.kubernetes.io/secure-backends: "true"
-  ## if you use ingress-nginx >= 0.21.0
-  #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-
-  ## Kubernetes Dashboard Ingress Class
-  # className: "example-lb"
-
-  ## Kubernetes Dashboard Ingress paths
-  ## Both `/` and `/*` are required to work on gce ingress.
-  paths:
-    - /
-  #  - /*
-
-  ## Custom Kubernetes Dashboard Ingress paths. Will override default paths.
-  ##
-  customPaths: []
-  #  - pathType: ImplementationSpecific
-  #    backend:
-  #      service:
-  #        name: ssl-redirect
-  #        port:
-  #          name: use-annotation
-  #  - pathType: ImplementationSpecific
-  #    backend:
-  #      service:
-  #        name: >-
-  #          {{ include "kubernetes-dashboard.fullname" . }}
-  #        port:
-  #          # Don't use string here, use only integer value!
-  #          number: 443
-  ## Kubernetes Dashboard Ingress hostnames
-  ## Must be provided if Ingress is enabled
-  ##
-  # hosts:
-  #   - kubernetes-dashboard.domain.com
-  ## Kubernetes Dashboard Ingress TLS configuration
-  ## Secrets must be manually created in the namespace
-  ##
-  # tls:
-  #   - secretName: kubernetes-dashboard-tls
-  #     hosts:
-  #       - kubernetes-dashboard.domain.com
 
 # Global dashboard settings
 settings:
