@@ -58,7 +58,7 @@ app-template:
       hosts:
        - host: &host paperless.toolstowelsandfroods.com
          paths:
-           - path: /
+           - path: /*
              pathType: Prefix
       tls:
         - secretName: paperless-tls-certificate
