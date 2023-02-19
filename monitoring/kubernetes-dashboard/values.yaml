@@ -40,25 +40,22 @@ protocolHttp: false
 
   ingress:
   ## If true, Kubernetes Dashboard Ingress will be created.
-  ##
-    main:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/whitelist-source-range: |
-          10.0.0.0/8,172.16.0.0/12,192.168.50.0/24,192.168.1.0/24
-        hajimari.io/icon: mdi:kubernetes
-    
-      hosts:
-        - host: &host kubernetes.toolstowelsandfroods.com
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - secretName: kubernetes-dashboard-tls-certificate
-          hosts:
-            - *host
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/whitelist-source-range: |
+        10.0.0.0/8,172.16.0.0/12,192.168.50.0/24,192.168.1.0/24
+      hajimari.io/icon: mdi:kubernetes 
+    hosts:
+      - host: &host kubernetes.toolstowelsandfroods.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: kubernetes-dashboard-tls-certificate
+        hosts:
+          - *host
 
 ## Metrics Scraper
 ## Container to scrape, store, and retrieve a window of time from the Metrics Server.
