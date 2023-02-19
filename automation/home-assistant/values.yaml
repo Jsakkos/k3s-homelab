@@ -43,10 +43,6 @@ app-template:
           paths:
             - path: /
               pathType: Prefix
-      tls:
-        - secretName: home-assistant-tls-certificate
-          hosts:
-            - *host
   persistence:
     config:
       enabled: true
