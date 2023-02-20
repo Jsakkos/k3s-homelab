@@ -37,17 +37,17 @@ app-template:
         - secretName: plex-tls-certificate
           hosts:
             - *host
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: "OnRootMismatch"
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: "OnRootMismatch"
 
-    persistence:
-      media:
-        enabled: true
-        type: nfs
-        server: 192.168.1.89
-        path: "/volume1/k3s/plex"
-        mountPath: /media
-        readOnly: true
+  persistence:
+    media:
+      enabled: true
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/plex"
+      mountPath: /media
+      readOnly: true
