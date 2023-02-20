@@ -15,6 +15,9 @@ app-template:
       ports:
         http:
           port: 32400
+  envFrom:
+    - secretRef:
+        name: plex-secret
   ingress:
     main:
       enabled: true
