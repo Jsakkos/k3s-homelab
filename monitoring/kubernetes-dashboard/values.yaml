@@ -1,169 +1,132 @@
-image:
-  ## Repository for container
-  repository: kubernetesui/dashboard
-  tag: ""  # If not defined, uses appVersion of Chart.yaml
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-
-## Number of replicas
-replicaCount: 1
-
-extraArgs:
- - --enable-skip-login
- - --disable-settings-authorizer
- - --enable-insecure-login
-
-securityContext:
-  seccompProfile:
-    type: RuntimeDefault
-containerSecurityContext:
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  runAsUser: 1001
-  runAsGroup: 2001
-
-## Pod resource requests & limits
-resources:
-  requests:
-    cpu: 100m
-    memory: 200Mi
-  limits:
-    cpu: 2
-    memory: 200Mi
-
-## Serve application over HTTP without TLS
-##
-## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
-protocolHttp: false
-
-
-ingress:
-## If true, Kubernetes Dashboard Ingress will be created.
-  enabled: true
-  ingressClassName: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/whitelist-source-range: |
-      10.0.0.0/8,172.16.0.0/12,192.168.50.0/24,192.168.1.0/24
-    hajimari.io/icon: mdi:kubernetes 
-  hosts:
-    - host: &host kubernetes.toolstowelsandfroods.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: kubernetes-dashboard-tls-certificate
-      hosts:
-        - *host
-
-## Metrics Scraper
-## Container to scrape, store, and retrieve a window of time from the Metrics Server.
-## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
-metricsScraper:
-  ## Wether to enable dashboard-metrics-scraper
-  enabled: false
+kubernetes-dashboard:
   image:
-    repository: kubernetesui/metrics-scraper
-    tag: v1.0.8
-  resources: {}
-  ## SecurityContext especially for the kubernetes dashboard metrics scraper container
-  ## If not set, the global containterSecurityContext values will define these values
-  # containerSecurityContext:
-  #   allowPrivilegeEscalation: false
-  #   readOnlyRootFilesystem: true
-  #   runAsUser: 1001
-  #   runAsGroup: 2001
-#  args:
-#    - --log-level=info
-#    - --logtostderr=true
+    ## Repository for container
+    repository: kubernetesui/dashboard
+    tag: ""  # If not defined, uses appVersion of Chart.yaml
+    pullPolicy: IfNotPresent
+    pullSecrets: []
 
-## Optional Metrics Server sub-chart
-## Enable this if you don't already have metrics-server enabled on your cluster and
-## want to use it with dashboard metrics-scraper
-## refs:
-##  - https://github.com/kubernetes-sigs/metrics-server
-##  - https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server
-metrics-server:
-  enabled: false
-  ## Example for additional args
-  # args:
-  #  - --kubelet-preferred-address-types=InternalIP
-  #  - --kubelet-insecure-tls
+  ## Number of replicas
+  replicaCount: 1
 
-rbac:
-  # Specifies whether namespaced RBAC resources (Role, Rolebinding) should be created
-  create: true
+  extraArgs:
+   - --enable-skip-login
+   - --disable-settings-authorizer
+   - --enable-insecure-login
 
-  # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) to access metrics should be created
-  # Independent from rbac.create parameter.
-  clusterRoleMetrics: true
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    runAsUser: 1001
+    runAsGroup: 2001
 
-  # Start in ReadOnly mode.
-  # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) with read only permissions to all resources listed inside the cluster should be created
-  # Only dashboard-related Secrets and ConfigMaps will still be available for writing.
-  #
-  # The basic idea of the clusterReadOnlyRole
-  # is not to hide all the secrets and sensitive data but more
-  # to avoid accidental changes in the cluster outside the standard CI/CD.
-  #
-  # It is NOT RECOMMENDED to use this version in production.
-  # Instead you should review the role and remove all potentially sensitive parts such as
-  # access to persistentvolumes, pods/log etc.
-  #
-  # Independent from rbac.create parameter.
-  clusterReadOnlyRole: false
-  # It is possible to add additional rules if read only role is enabled.
-  # This can be useful, for example, to show CRD resources.
-  # clusterReadOnlyRoleAdditionalRules: []
+  ## Pod resource requests & limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 2
+      memory: 200Mi
 
-  # If the default role permissions are not enough, it is possible to add additional permissions.
-  # roleAdditionalRules: []
+  ## Serve application over HTTP without TLS
+  ##
+  ## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
+  protocolHttp: false
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
 
-livenessProbe:
-  # Number of seconds to wait before sending first probe
-  initialDelaySeconds: 30
-  # Number of seconds to wait for probe response
-  timeoutSeconds: 30
+  ingress:
+      main:
+  ## If true, Kubernetes Dashboard Ingress will be created.
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          hajimari.io/icon: mdi:kubernetes 
+          hajimari.io/appName: Dashboard
+          hajimari.io/info: Kubernetes dashboard
+        hosts:
+          - host: &host kubernetes.toolstowelsandfroods.com
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - secretName: kubernetes-dashboard-tls-certificate
+            hosts:
+              - *host
 
-## podDisruptionBudget
-## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-podDisruptionBudget:
-  enabled: false
-  ## Minimum available instances; ignored if there is no PodDisruptionBudget
-  minAvailable:
-  ## Maximum unavailable instances; ignored if there is no PodDisruptionBudget
-  maxUnavailable:
+  ## Metrics Scraper
+  ## Container to scrape, store, and retrieve a window of time from the Metrics Server.
+  ## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
+  metricsScraper:
+    ## Wether to enable dashboard-metrics-scraper
+    enabled: true
+    image:
+      repository: kubernetesui/metrics-scraper
+      tag: v1.0.8
+    resources: {}
 
-## PodSecurityContext for pod level securityContext
-# securityContext:
-#   runAsUser: 1001
-#   runAsGroup: 2001
+  metrics-server:
+    enabled: true
+    ## Example for additional args
+    # args:
+    #  - --kubelet-preferred-address-types=InternalIP
+    #  - --kubelet-insecure-tls
 
-networkPolicy:
-  # Whether to create a network policy that allows/restricts access to the service
-  enabled: false
+  rbac:
+    # Specifies whether namespaced RBAC resources (Role, Rolebinding) should be created
+    create: true
 
-## podSecurityPolicy for fine-grained authorization of pod creation and updates
-podSecurityPolicy:
-  # Specifies whether a pod security policy should be created
-  enabled: false
+    # Specifies whether cluster-wide RBAC resources (ClusterRole, ClusterRolebinding) to access metrics should be created
+    # Independent from rbac.create parameter.
+    clusterRoleMetrics: true
 
-serviceMonitor:
-  # Whether or not to create a Prometheus Operator service monitor.
-  enabled: false
-  ## Here labels can be added to the serviceMonitor
-  labels: {}
-  ## Here annotations can be added to the serviceMonitor
-  annotations: {}
+    # Independent from rbac.create parameter.
+    clusterReadOnlyRole: false
 
-## Optional containers, i.e. for auth addons.
-optionalContainers:
-  enabled: false
-  containers: []
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  livenessProbe:
+    # Number of seconds to wait before sending first probe
+    initialDelaySeconds: 30
+    # Number of seconds to wait for probe response
+    timeoutSeconds: 30
+
+  ## podDisruptionBudget
+  ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    enabled: false
+    ## Minimum available instances; ignored if there is no PodDisruptionBudget
+    minAvailable:
+    ## Maximum unavailable instances; ignored if there is no PodDisruptionBudget
+    maxUnavailable:
+
+  networkPolicy:
+    # Whether to create a network policy that allows/restricts access to the service
+    enabled: false
+
+  ## podSecurityPolicy for fine-grained authorization of pod creation and updates
+  podSecurityPolicy:
+    # Specifies whether a pod security policy should be created
+    enabled: false
+
+  serviceMonitor:
+    # Whether or not to create a Prometheus Operator service monitor.
+    enabled: false
+    ## Here labels can be added to the serviceMonitor
+    labels: {}
+    ## Here annotations can be added to the serviceMonitor
+    annotations: {}
+
+  ## Optional containers, i.e. for auth addons.
+  optionalContainers:
+    enabled: false
+    containers: []
