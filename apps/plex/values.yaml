@@ -46,7 +46,7 @@ app-template:
   persistence:
     config:
       enabled: true
-      type: longhorn
+      strageClass: longhorn
       readOnly: false
     media:
       enabled: true
