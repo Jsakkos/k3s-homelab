@@ -1,11 +1,6 @@
 kubernetes-dashboard:
-  image:
-    ## Repository for container
-    repository: kubernetesui/dashboard
-    tag: ""  # If not defined, uses appVersion of Chart.yaml
-    pullPolicy: IfNotPresent
-    pullSecrets: []
-
+  env:
+    TZ: America/Los_Angeles
   ## Number of replicas
   replicaCount: 1
 
@@ -31,16 +26,8 @@ kubernetes-dashboard:
     limits:
       cpu: 2
       memory: 200Mi
-
-  ## Serve application over HTTP without TLS
-  ##
-  ## Note: If set to true, you may want to add --enable-insecure-login to extraArgs
-  protocolHttp: false
-
-
   ingress:
     main:
-## If true, Kubernetes Dashboard Ingress will be created.
       enabled: true
       ingressClassName: nginx
       annotations:
