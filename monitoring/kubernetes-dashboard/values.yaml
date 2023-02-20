@@ -39,24 +39,24 @@ kubernetes-dashboard:
 
 
   ingress:
-      main:
-  ## If true, Kubernetes Dashboard Ingress will be created.
-        enabled: true
-        ingressClassName: nginx
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-prod
-          hajimari.io/icon: mdi:kubernetes 
-          hajimari.io/appName: Dashboard
-          hajimari.io/info: Kubernetes dashboard
-        hosts:
-          - host: &host kubernetes.toolstowelsandfroods.com
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - secretName: kubernetes-dashboard-tls-certificate
-            hosts:
-              - *host
+    main:
+## If true, Kubernetes Dashboard Ingress will be created.
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/icon: mdi:kubernetes 
+        hajimari.io/appName: Dashboard
+        hajimari.io/info: Kubernetes dashboard
+      hosts:
+        - host: &host kubernetes.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: kubernetes-dashboard-tls-certificate
+          hosts:
+            - *host
 
   ## Metrics Scraper
   ## Container to scrape, store, and retrieve a window of time from the Metrics Server.
