@@ -46,10 +46,13 @@ app-template:
     persistence:
       config:
         enabled: true
-        storageClass: longhorn
-      media:
-        enabled: true
-        mountPath: /media
+        type: pvc
         existingClaim: plex-media-pvc
-        readOnly: true
+        subPath:
+          - path: .
+            mountPath: /media
+          - path: "TV Shows"
+            mountPath: /series
+          - path: Movies
+            mountPath: /movies
 
