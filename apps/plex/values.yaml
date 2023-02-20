@@ -46,8 +46,7 @@ app-template:
   persistence:
     config:
       enabled: true
-      storageClass: longhorn
-      readOnly: false
+      existingClaim: plex-config
     media:
       enabled: true
       type: nfs

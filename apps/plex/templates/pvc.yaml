@@ -1,27 +1,12 @@
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: plex-media-pv
-spec:
-  capacity:
-    storage: 500Gi
-  storageClassName: standard
-  accessModes:
-  - ReadOnlyMany
-  nfs:
-    server: 192.168.1.89
-    path: "/volume1/k3s/plex"
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: plex-media-pvc
+  name: plex-config
+  namespace: plex
 spec:
-  volumeName: plex-media-pv
   accessModes:
-  - ReadOnlyMany
-  storageClassName: standard
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 500Gi
+      storage: 20Gi
+  storageClassName: longhorn1
