@@ -11,7 +11,7 @@ spec:
   - ReadWriteMany
   nfs:
     server: 192.168.1.89
-    path: "/volume1/homes/plex"
+    path: "/volume1/k3s/plex"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
