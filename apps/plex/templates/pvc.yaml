@@ -8,7 +8,7 @@ spec:
     storage: 500Gi
   storageClassName: standard
   accessModes:
-  - ReadWriteMany
+  - ReadOnlyMany
   nfs:
     server: 192.168.1.89
     path: "/volume1/k3s/plex"
@@ -20,7 +20,7 @@ metadata:
 spec:
   volumeName: plex-media-pv
   accessModes:
-  - ReadWriteMany
+  - ReadOnlyMany
   storageClassName: standard
   resources:
     requests:
