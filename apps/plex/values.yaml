@@ -44,15 +44,10 @@ app-template:
       fsGroupChangePolicy: "OnRootMismatch"
 
     persistence:
-      config:
+      media:
         enabled: true
-        type: pvc
-        existingClaim: plex-media-pvc
-        subPath:
-          - path: .
-            mountPath: /media
-          - path: "TV Shows"
-            mountPath: /series
-          - path: Movies
-            mountPath: /movies
-
+        type: nfs
+        server: 192.168.1.89
+        path: "/volume1/k3s/plex"
+        mountPath: /media
+        readOnly: true
