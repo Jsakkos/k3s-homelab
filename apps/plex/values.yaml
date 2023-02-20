@@ -49,6 +49,7 @@ app-template:
         storageClass: longhorn
       media:
         enabled: true
-        mountPath: /mnt/media
+        mountPath: /media
         existingClaim: plex-media-pvc
+        readOnly: true
 
