@@ -61,21 +61,10 @@ kubernetes-dashboard:
   ## Metrics Scraper
   ## Container to scrape, store, and retrieve a window of time from the Metrics Server.
   ## refs: https://github.com/kubernetes-sigs/dashboard-metrics-scraper
-  metricsScraper:
-    ## Wether to enable dashboard-metrics-scraper
-    enabled: true
-    image:
-      repository: kubernetesui/metrics-scraper
-      tag: v1.0.8
-    resources: {}
-
-  metrics-server:
-    enabled: true
-    ## Example for additional args
-    # args:
-    #  - --kubelet-preferred-address-types=InternalIP
-    #  - --kubelet-insecure-tls
-
+    metricsScraper:
+      enabled: true
+    serviceMonitor:
+      enabled: false
   rbac:
     # Specifies whether namespaced RBAC resources (Role, Rolebinding) should be created
     create: true
@@ -100,33 +89,3 @@ kubernetes-dashboard:
     # Number of seconds to wait for probe response
     timeoutSeconds: 30
 
-  ## podDisruptionBudget
-  ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  podDisruptionBudget:
-    enabled: false
-    ## Minimum available instances; ignored if there is no PodDisruptionBudget
-    minAvailable:
-    ## Maximum unavailable instances; ignored if there is no PodDisruptionBudget
-    maxUnavailable:
-
-  networkPolicy:
-    # Whether to create a network policy that allows/restricts access to the service
-    enabled: false
-
-  ## podSecurityPolicy for fine-grained authorization of pod creation and updates
-  podSecurityPolicy:
-    # Specifies whether a pod security policy should be created
-    enabled: false
-
-  serviceMonitor:
-    # Whether or not to create a Prometheus Operator service monitor.
-    enabled: false
-    ## Here labels can be added to the serviceMonitor
-    labels: {}
-    ## Here annotations can be added to the serviceMonitor
-    annotations: {}
-
-  ## Optional containers, i.e. for auth addons.
-  optionalContainers:
-    enabled: false
-    containers: []
