@@ -1,0 +1,202 @@
+app-template:
+  name: &app immich
+  namespace: immich
+  values:
+    image:
+      repository: ghcr.io/immich-app/immich-proxy
+      tag: v1.46.1
+    env:
+      IMMICH_SERVER_URL: http://localhost:3001
+      IMMICH_WEB_URL: http://localhost:3000
+      IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
+      REDIS_HOSTNAME: localhost
+    envFrom:
+      - secretRef:
+          name: immich-secrets
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hajimari.io/appName: "Immich"
+          hajimari.io/icon: heroicons:photo
+        hosts:
+          - host: &host photos.toolstowelsandfroods.com
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      library:
+        enabled: true
+        mountPath: /usr/src/app/upload
+        type: nfs
+        server: 192.168.1.89
+        path: /volume1/k3s/immich
+    resources:
+      requests:
+        cpu: 100m
+        memory: 250Mi
+      limits:
+        memory: 2000Mi
+    sidecars:
+      immich-server:
+        name: immich-server
+        image: ghcr.io/immich-app/immich-server:v1.46.1
+        volumeMounts:
+          - name: library
+            mountPath: /usr/src/app/upload
+        command: ["/bin/sh"]
+        args:
+          - ./start-server.sh
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DB_HOSTNAME
+            value: postgres-rw.databases.svc.cluster.local
+          - name: DB_DATABASE_NAME
+            value: immich
+          - name: IMMICH_SERVER_URL
+            value: http://localhost:3001
+          - name: IMMICH_WEB_URL
+            value: http://localhost:3000
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://localhost:3003
+          - name: REDIS_HOSTNAME
+            value: localhost
+        envFrom:
+          - secretRef:
+              name: immich-secrets
+
+      immich-microservices:
+        name: immich-microservices
+        image: ghcr.io/immich-app/immich-server:v1.46.1
+        volumeMounts:
+          - name: library
+            mountPath: /usr/src/app/upload
+        command: ["/bin/sh"]
+        args:
+          - ./start-microservices.sh
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DB_HOSTNAME
+            value: postgres-rw.databases.svc.cluster.local
+          - name: DB_DATABASE_NAME
+            value: immich
+           - name: IMMICH_SERVER_URL
+            value: http://localhost:3001
+          - name: IMMICH_WEB_URL
+            value: http://localhost:3000
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://localhost:3003
+          - name: REDIS_HOSTNAME
+            value: localhost
+        envFrom:
+        - secretRef:
+            name: immich-secrets
+
+      immich-redis:
+        name: immich-redis
+        image: public.ecr.aws/docker/library/redis:7.0.8
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DB_HOSTNAME
+            value: postgres-rw.databases.svc.cluster.local
+          - name: DB_DATABASE_NAME
+            value: immich
+          - name: IMMICH_SERVER_URL
+            value: http://localhost:3001
+          - name: IMMICH_WEB_URL
+            value: http://localhost:3000
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://localhost:3003
+          - name: REDIS_HOSTNAME
+            value: localhost
+          - name: REDIS_REPLICATION_MODE
+            value: master
+        command: ["redis-server"]
+      immich-web:
+        name: immich-web
+        image: ghcr.io/immich-app/immich-web:v1.46.1
+        volumeMounts:
+          - name: library
+            mountPath: /usr/src/app/upload
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DB_HOSTNAME
+            value: postgres-rw.databases.svc.cluster.local
+          - name: DB_DATABASE_NAME
+            value: immich
+          - name: IMMICH_SERVER_URL
+            value: http://localhost:3001
+          - name: IMMICH_WEB_URL
+            value: http://localhost:3000
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://localhost:3003
+          - name: REDIS_HOSTNAME
+            value: localhost
+          - name: PUBLIC_IMMICH_SERVER_URL
+            value: http://localhost:3001
+        command: ["/bin/sh"]
+        args:
+          - ./entrypoint.sh
+        envFrom:
+        - secretRef:
+            name: immich-secrets
+
+      immich-machinelearning:
+        name: immich-machinelearning
+        image: ghcr.io/immich-app/immich-machine-learning:v1.46.1
+        volumeMounts:
+          - name: library
+            mountPath: /usr/src/app/upload
+        command: ["/bin/sh"]
+        env:
+          - name: NODE_ENV
+            value: "production"
+          - name: DB_HOSTNAME
+            value: postgres-rw.databases.svc.cluster.local
+          - name: DB_DATABASE_NAME
+            value: immich
+          - name: IMMICH_SERVER_URL
+            value: http://localhost:3001
+          - name: IMMICH_WEB_URL
+            value: http://localhost:3000
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://localhost:3003
+          - name: REDIS_HOSTNAME
+            value: localhost
+        args:
+          - ./entrypoint.sh
+        envFrom:
+        - secretRef:
+            name: immich-secrets
+      immich-db:
+        name: immich-db
+        image: ghcr.io/onedr0p/postgres-initdb:14.7
+        env:
+          - name: POSTGRES_HOST
+            value: postgres-rw.databases.svc.cluster.local
+          - name: POSTGRES_DB
+            value: immich
+        envFrom:
+        - secretRef:
+            name: immich-secrets
+
+# resources:
+#   requests:
+#     cpu: 23m
+#     memory: 2975M
+#   limits:
+#     memory: 6572M
+
