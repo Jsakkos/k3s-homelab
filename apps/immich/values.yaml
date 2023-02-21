@@ -91,7 +91,7 @@ app-template:
             value: postgres-rw.databases.svc.cluster.local
           - name: DB_DATABASE_NAME
             value: immich
-           - name: IMMICH_SERVER_URL
+          - name: IMMICH_SERVER_URL
             value: http://localhost:3001
           - name: IMMICH_WEB_URL
             value: http://localhost:3000
