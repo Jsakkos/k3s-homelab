@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: immich
+  namespace: services
+spec:
+  values:
+    initContainers:
+      init-db:
+        image: ghcr.io/onedr0p/postgres-initdb:14.7
+        env:
+          - name: POSTGRES_HOST
+            value: postgres-rw.databases.svc.cluster.local
+          - name: POSTGRES_DB
+            value: immich
+        envFrom:
+          - secretRef:
+            name: immich-secrets
