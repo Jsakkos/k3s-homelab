@@ -38,28 +38,4 @@
       length: 32
       special: true
 
-- path: immich/
-  data:
-    - key: DB_USERNAME
-      length: 10
-      special: false
-      
-- path: immich/
-  data:
-    - key: DB_PASSWORD
-      length: 32
-      special: true
-      
-- path: immich/
-  data:
-    - key: JWT_SECRET
-      length: 32
-      special: true
-      
-- path: immich/
-  data:
-    - key: POSTGRES_SUPER_PASS
-      length: 32
-      special: true
-
 
