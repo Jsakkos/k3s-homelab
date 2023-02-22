@@ -26,7 +26,7 @@
       length: 32
       special: false
 # Paperless
-- path: paperless-ngx
+- path: paperless-ngx/
   data:
     - key: secret_key
       length: 32
@@ -38,25 +38,25 @@
       length: 32
       special: true
 
-- path: immich
+- path: immich/
   data:
     - key: DB_USERNAME
       length: 10
       special: false
       
-- path: immich
+- path: immich/
   data:
     - key: DB_PASSWORD
       length: 32
       special: true
       
-- path: immich
+- path: immich/
   data:
     - key: JWT_SECRET
       length: 32
       special: true
       
-- path: immich
+- path: immich/
   data:
     - key: POSTGRES_SUPER_PASS
       length: 32
