@@ -4,6 +4,13 @@ app-template:
       reloader.stakater.com/auto: "true"
     type: statefulset
     replicas: 1
+  extraInitContainers:
+    - name: init-db
+      image: ghcr.io/onedr0p/postgres-initdb:14.6
+      imagePullPolicy: IfNotPresent
+      envFrom:
+        - secretRef:
+            name: paperless-secrets
   image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
     tag: 1.12.2
@@ -16,14 +23,17 @@ app-template:
     PAPERLESS_OCR_LANGUAGE: eng
     PAPERLESS_ENABLE_HTTP_REMOTE_USER: "true"
     PAPERLESS_PORT: 8000
-    PAPERLESS_REDIS: redis://redis.redis.svc.cluster.local:6379
+    PAPERLESS_REDIS: redis://localhost:6379
     PAPERLESS_TIKA_ENABLED: 1
-    PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg.gotenberg.svc.cluster.local:3000
-    PAPERLESS_TIKA_ENDPOINT: http://tika.tika.svc.cluster.local:9998
+    PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
+    PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
     PAPERLESS_TASK_WORKERS: 2
     PAPERLESS_TIME_ZONE: "America/Los_Angeles"
-    PAPERLESS_CONSUMPTION_DIR: /mnt/inbox
-    PAPERLESS_MEDIA_ROOT: /mnt/paperless
+    PAPERLESS_URL: https://paperless.toostowelsandfroods.com
+    PAPERLESS_DBHOST: postgres-rw.databases.svc.cluster.local
+    PAPERLESS_DBNAME: paperless
+    PAPERLESS_CONSUMPTION_DIR: /usr/src/paperless/consume
+    PAPERLESS_MEDIA_ROOT: /usr/src/paperless/media
     USERMAP_UID: 1000
     USERMAP_GID: 1000
     PAPERLESS_ADMIN_USER: paperless_admin
@@ -42,7 +52,7 @@ app-template:
       enabled: true
       ingressClassName: nginx
       annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod     
+        cert-manager.io/cluster-issuer: letsencrypt-prod
         hajimari.io/enable: "true"
         hajimari.io/icon: file-document
         hajimari.io/appName: Paperless
@@ -62,17 +72,44 @@ app-template:
 
   persistence:
     data:
-      storageClass: longhorn
+      enabled: true
       mountPath: /usr/src/paperless/data
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/paperless/data"
     media:
       enabled: true
-      mountPath: /mnt/paperless
-      existingClaim: paperless-media-pvc
-    inbox:
+      mountPath: /usr/src/paperless/media
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/paperless/media"
+    consume:
       enabled: true
-      mountPath: /mnt/inbox
-      existingClaim: paperless-consume-pvc
-
+      mountPath: /usr/src/paperless/consume
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/paperless/consume"
+    export:
+      enabled: true
+      mountPath: /usr/src/paperless/export
+      type: nfs
+      server: 192.168.1.89
+    path: "/volume1/k3s/paperless/export"
+  sidecars:
+    redis:
+      name: redis
+      image: redis:7.0
+      imagePullPolicy: IfNotPresent
+    gotenburg:
+      name: gotenburg
+      image: thecodingmachine/gotenberg:7.8.0
+      env:
+        - name: DISABLE_GOOGLE_CHROME
+          value: '1'
+    tika:
+      image: apache/tika:2.5.0
+      name: tika
+      imagePullPolicy: Always
   resources:
     requests:
       cpu: 23m
