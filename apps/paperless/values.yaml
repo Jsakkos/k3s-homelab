@@ -4,18 +4,6 @@ app-template:
       reloader.stakater.com/auto: "true"
     type: statefulset
     replicas: 1
-  extraInitContainers:
-    - name: init-db
-      image: ghcr.io/onedr0p/postgres-initdb:14.6
-      imagePullPolicy: IfNotPresent
-      env:
-        - name: POSTGRES_HOST
-          value: postgres-rw.databases.svc.cluster.local
-        - name: POSTGRES_DB
-          value: paperless
-      envFrom:
-        - secretRef:
-            name: paperless-secrets
   image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
     tag: 1.12.2
@@ -35,8 +23,6 @@ app-template:
     PAPERLESS_TASK_WORKERS: 2
     PAPERLESS_TIME_ZONE: "America/Los_Angeles"
     PAPERLESS_URL: https://paperless.toostowelsandfroods.com
-    PAPERLESS_DBHOST: postgres-rw.databases.svc.cluster.local
-    PAPERLESS_DBNAME: paperless
     PAPERLESS_CONSUMPTION_DIR: /usr/src/paperless/consume
     PAPERLESS_MEDIA_ROOT: /usr/src/paperless/media
     USERMAP_UID: 1000
