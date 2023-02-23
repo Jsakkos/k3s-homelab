@@ -31,13 +31,11 @@ app-template:
   envFrom:
     - secretRef:
         name: paperless-secrets
-
   service:
     main:
       ports:
         http:
           port: 8000
-
   ingress:
     main:
       enabled: true
@@ -56,18 +54,14 @@ app-template:
       tls:
         - secretName: paperless-tls-certificate
           hosts:
-            - *host
+            - *host        
   podSecurityContext:
     fsGroup: 1000
     fsGroupChangePolicy: "OnRootMismatch"
-
   persistence:
     data:
       enabled: true
-      mountPath: /usr/src/paperless/data
-      type: nfs
-      server: 192.168.1.89
-      path: "/volume1/k3s/paperless/data"
+      storageClass: longhorn
     media:
       enabled: true
       mountPath: /usr/src/paperless/media
