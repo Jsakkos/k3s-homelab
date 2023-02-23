@@ -60,8 +60,8 @@ app-template:
     fsGroupChangePolicy: "OnRootMismatch"
   persistence:
     data:
-      enabled: true
       storageClass: longhorn
+      mountPath: /usr/src/paperless/data
     media:
       enabled: true
       mountPath: /usr/src/paperless/media
