@@ -7,6 +7,9 @@ app-template:
   initContainers:
     init-db:
       image: ghcr.io/onedr0p/postgres-initdb:14.7
+      env:
+        POSTGRES_DB: immich
+        POSTGRES_HOST: postgres-rw.default.svc.cluster.local
       envFrom:
         - secretRef:
             name: immich-secrets
@@ -15,6 +18,8 @@ app-template:
     IMMICH_WEB_URL: http://localhost:3000
     IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
     REDIS_HOSTNAME: localhost
+    DB_DATABASE_NAME: immich
+    DB_HOSTNAME: postgres-rw.default.svc.cluster.local
   envFrom:
     - secretRef:
         name: immich-secrets
@@ -67,6 +72,8 @@ app-template:
           value: "production"
         - name: DB_DATABASE_NAME
           value: immich
+        - name: DB_HOSTNAME: 
+          value: postgres-rw.default.svc.cluster.local
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
