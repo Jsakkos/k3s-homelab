@@ -7,9 +7,6 @@ app-template:
   initContainers:
     init-db:
       image: ghcr.io/onedr0p/postgres-initdb:14.7
-      env:
-        - name: POSTGRES_DB
-          value: immich
       envFrom:
         - secretRef:
             name: immich-secrets
