@@ -151,7 +151,6 @@ app-template:
       envFrom:
       - secretRef:
           name: immich-secrets
-    initContainers:
       init-db:
         image: ghcr.io/onedr0p/postgres-initdb:14.7
         imagePullPolicy: IfNotPresent
