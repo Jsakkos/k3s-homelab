@@ -5,11 +5,12 @@ app-template:
     repository: ghcr.io/immich-app/immich-proxy
     tag: v1.46.1
   initContainers:
-    image: ghcr.io/onedr0p/postgres-initdb:14.7
-    imagePullPolicy: IfNotPresent
-    envFrom:
-      - secretRef:
-          name: immich-secrets
+    init-db:
+      image: ghcr.io/onedr0p/postgres-initdb:14.7
+      imagePullPolicy: IfNotPresent
+      envFrom:
+       - secretRef:
+            name: immich-secrets
   env:
     IMMICH_SERVER_URL: http://localhost:3001
     IMMICH_WEB_URL: http://localhost:3000
