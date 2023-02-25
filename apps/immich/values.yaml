@@ -72,7 +72,7 @@ app-template:
           value: "production"
         - name: DB_DATABASE_NAME
           value: immich
-        - name: DB_HOSTNAME: 
+        - name: DB_HOSTNAME 
           value: postgres-rw.default.svc.cluster.local
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
