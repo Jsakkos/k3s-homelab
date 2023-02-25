@@ -12,7 +12,7 @@ app-template:
       name: immich-db
       envFrom:
         - secretRef:
-            name: immich-secretS
+            name: immich-secrets
   env:
     IMMICH_SERVER_URL: http://localhost:3001
     IMMICH_WEB_URL: http://localhost:3000
