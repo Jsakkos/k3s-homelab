@@ -1,9 +1,0 @@
----
-apiVersion: v2
-description: DNS proxy as ad-blocker for local network
-name: adguard-home
-version: 0.0.0
-dependencies:
-  - name: adguard-home
-  - version: 5.5.2
-  - repository: https://k8s-at-home.com/charts/
