@@ -4,8 +4,9 @@ app-template:
   image:
     repository: ghcr.io/immich-app/immich-proxy
     tag: v1.46.1
-  postgresql:
-    enabled: true
+  initContainers:
+    image: ghcr.io/onedr0p/postgres-initdb:14.7
+    imagePullPolicy: IfNotPresent
     envFrom:
       - secretRef:
           name: immich-secrets
