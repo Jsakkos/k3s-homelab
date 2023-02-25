@@ -4,6 +4,15 @@ app-template:
   image:
     repository: ghcr.io/immich-app/immich-proxy
     tag: v1.46.1
+    
+  initContainers:
+    init-db:
+      image: ghcr.io/onedr0p/postgres-initdb:14.7
+      imagePullPolicy: IfNotPresent
+      name: immich-db
+      envFrom:
+        - secretRef:
+            name: immich-secretS
   env:
     IMMICH_SERVER_URL: http://localhost:3001
     IMMICH_WEB_URL: http://localhost:3000
@@ -12,6 +21,7 @@ app-template:
   envFrom:
     - secretRef:
         name: immich-secrets
+        
   service:
     main:
       ports:
@@ -151,13 +161,6 @@ app-template:
       envFrom:
       - secretRef:
           name: immich-secrets
-      init-db:
-        image: ghcr.io/onedr0p/postgres-initdb:14.7
-        imagePullPolicy: IfNotPresent
-        name: immich-db
-        envFrom:
-        - secretRef:
-            name: immich-secrets
 
 # resources:
 #   requests:
