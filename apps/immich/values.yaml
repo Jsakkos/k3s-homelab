@@ -57,12 +57,6 @@ app-template:
       args:
         - ./start-server.sh
       env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOSTNAME
-          value: postgres-rw.databases.svc.cluster.local
-        - name: DB_DATABASE_NAME
-          value: immich
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -85,12 +79,6 @@ app-template:
       args:
         - ./start-microservices.sh
       env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOSTNAME
-          value: postgres-rw.databases.svc.cluster.local
-        - name: DB_DATABASE_NAME
-          value: immich
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -107,12 +95,6 @@ app-template:
       name: immich-redis
       image: public.ecr.aws/docker/library/redis:7.0.8
       env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOSTNAME
-          value: postgres-rw.databases.svc.cluster.local
-        - name: DB_DATABASE_NAME
-          value: immich
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -131,12 +113,6 @@ app-template:
         - name: library
           mountPath: /usr/src/app/upload
       env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOSTNAME
-          value: postgres-rw.databases.svc.cluster.local
-        - name: DB_DATABASE_NAME
-          value: immich
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -162,12 +138,6 @@ app-template:
           mountPath: /usr/src/app/upload
       command: ["/bin/sh"]
       env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_HOSTNAME
-          value: postgres-rw.databases.svc.cluster.local
-        - name: DB_DATABASE_NAME
-          value: immich
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -184,11 +154,7 @@ app-template:
     immich-db:
       name: immich-db
       image: ghcr.io/onedr0p/postgres-initdb:14.7
-      env:
-        - name: POSTGRES_HOST
-          value: postgres-rw.databases.svc.cluster.local
-        - name: POSTGRES_DB
-          value: immich
+      imagePullPolicy: IfNotPresent
       envFrom:
       - secretRef:
           name: immich-secrets
