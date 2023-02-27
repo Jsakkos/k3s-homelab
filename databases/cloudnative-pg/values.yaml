@@ -1,4 +1,7 @@
 cloudnative-pg:
+  metadata:
+    name: cloudnative-pg
+    namespace: databases
   crds:
     create: true
   service:
