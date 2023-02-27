@@ -10,3 +10,4 @@ stacks:
   - name: automation
   - name: storage
   - name: monitoring
+  - name: databases
