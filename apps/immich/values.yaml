@@ -3,7 +3,7 @@ app-template:
   namespace: immich
   image:
     repository: ghcr.io/immich-app/immich-proxy
-    tag: v1.46.1
+    tag: v1.49.0
   initContainers:
     init-db:
       image: ghcr.io/onedr0p/postgres-initdb:14.7
@@ -60,7 +60,7 @@ app-template:
   sidecars:
     immich-server:
       name: immich-server
-      image: ghcr.io/immich-app/immich-server:v1.46.1
+      image: ghcr.io/immich-app/immich-server:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -88,7 +88,7 @@ app-template:
 
     immich-microservices:
       name: immich-microservices
-      image: ghcr.io/immich-app/immich-server:v1.46.1
+      image: ghcr.io/immich-app/immich-server:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -125,7 +125,7 @@ app-template:
       command: ["redis-server"]
     immich-web:
       name: immich-web
-      image: ghcr.io/immich-app/immich-web:v1.46.1
+      image: ghcr.io/immich-app/immich-web:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -149,7 +149,7 @@ app-template:
 
     immich-machinelearning:
       name: immich-machinelearning
-      image: ghcr.io/immich-app/immich-machine-learning:v1.46.1
+      image: ghcr.io/immich-app/immich-machine-learning:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
