@@ -10,7 +10,8 @@ app-template:
     IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
     REDIS_HOSTNAME: localhost
     DB_DATABASE_NAME: immich
-    DB_HOSTNAME: postgres-rw.cloudnative-pg
+    DB_HOSTNAME: localhost
+    DB_USERNAME: immich
   envFrom:
     - secretRef:
         name: immich-secrets
@@ -64,7 +65,7 @@ app-template:
         - name: DB_DATABASE_NAME
           value: immich
         - name: DB_HOSTNAME 
-          value: postgres-rw.cloudnative-pg
+          value: localhost
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
         - name: IMMICH_WEB_URL
@@ -160,7 +161,7 @@ app-template:
       - secretRef:
           name: immich-secrets
 postgresql:
-  enabled: false
+  enabled: true
   global:
     postgresql:
       auth:
