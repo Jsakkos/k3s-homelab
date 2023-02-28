@@ -155,13 +155,16 @@ app-template:
       envFrom:
       - secretRef:
           name: immich-secrets
-postgresql:
-  enabled: true
-  global:
-    postgresql:
-      auth:
-        username: immich
-        database: immich
+    immich-db:
+      name: immich
+      image: postgres:14
+      env:
+        POSTGRES_USER: immich
+        POSTGRES_DB: immich
+      envFrom:
+      - secretRef:
+          name: immich-secrets
+
 # resources:
 #   requests:
 #     cpu: 23m
