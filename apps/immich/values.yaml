@@ -1,178 +1,266 @@
-app-template:
-  name: &app immich
-  namespace: immich
-  image:
-    repository: ghcr.io/immich-app/immich-proxy
-    tag: v1.46.1
-  initContainers:
-    init-db:
-      image: ghcr.io/onedr0p/postgres-initdb:14.7
-      env:
-        POSTGRES_DB: immich
-        POSTGRES_HOST: postgres-rw.cloudnative-pg
-      envFrom:
-        - secretRef:
-            name: immich-secrets
+---
+postgresql:
+  enabled: false
+  global:
+    postgresql:
+      auth:
+        username: immich
+        database: immich
+
+redis:
+  enabled: false
+  architecture: standalone
+  auth:
+    enabled: false
+
+common_env:
+  REDIS_HOSTNAME: '{{ printf "%s-redis-master" (include "common.names.fullname" .) }}'
+  DB_HOSTNAME: '{{ include "common.names.name" . }}-postgresql'
+  DB_USERNAME: "{{ .Values.postgresql.global.postgresql.auth.username }}"
+  DB_DATABASE_NAME: "{{ .Values.postgresql.global.postgresql.auth.database }}"
+  # ENABLE_MAPBOX is either true of false -> if true, you have to provide MAPBOX_KEY
+  ENABLE_MAPBOX: false
+  MAPBOX_KEY: ""
+  DISABLE_REVERSE_GEOCODING: "true"
+# -- You should provide your own secret outside of this helm-chart and use `postgresql.global.postgresql.auth.existingSecret` to provide credentials to the postgresql instance
+envFrom:
+  - secretRef:
+      name: immich-secrets
+
+server:
+  enabled: true
   env:
-    IMMICH_SERVER_URL: http://localhost:3001
-    IMMICH_WEB_URL: http://localhost:3000
-    IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
-    REDIS_HOSTNAME: localhost
-    DB_DATABASE_NAME: immich
-    DB_HOSTNAME: postgres-rw.cloudnative-pg
-  envFrom:
-    - secretRef:
-        name: immich-secrets
+    NODE_ENV: "production"
   service:
     main:
+      enabled: true
+      primary: true
+      type: ClusterIP
       ports:
         http:
-          port: 8080
-  ingress:
+          enabled: true
+          primary: true
+          port: 3001
+          protocol: HTTP
+  image:
+    # -- image repository
+    repository: altran1502/immich-server
+    # -- image tag
+    tag: v1.30.0_46-dev
+    # -- image pull policy
+    pullPolicy: IfNotPresent
+  command: "/bin/sh"
+  args:
+    - "./start-server.sh"
+
+microservice:
+  enabled: true
+  env:
+    NODE_ENV: "production"
+  service:
+    main:
+      enabled: false
+      primary: true
+      type: ClusterIP
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 3001
+          protocol: HTTP
+  image:
+    # -- image repository
+    repository: altran1502/immich-server
+    # -- image tag
+    tag: v1.30.0_46-dev
+    # -- image pull policy
+    pullPolicy: IfNotPresent
+  command: "/bin/sh"
+  args:
+    - "./start-microservices.sh"
+
+machine_learning:
+  enabled: true
+  image:
+    # -- image repository
+    repository: altran1502/immich-machine-learning
+    # -- image tag
+    tag: v1.30.0_46-dev
+    # -- image pull policy
+    pullPolicy: IfNotPresent
+
+  service:
     main:
       enabled: true
-      ingressClassName: "nginx"
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        hajimari.io/appName: "Immich"
-        hajimari.io/icon: heroicons:photo
-      hosts:
-        - host: &host photos.toolstowelsandfroods.com
-          paths:
-            - path: /
-      tls:
-        - hosts:
-            - *host
-  persistence:
-    library:
+      primary: true
+      type: ClusterIP
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 3003
+          protocol: HTTP
+
+  command: "/bin/sh"
+  args:
+    - "./entrypoint.sh"
+  env:
+    NODE_ENV: "production"
+
+web:
+  enabled: true
+  image:
+    # -- image repository
+    repository: altran1502/immich-web
+    # -- image tag
+    tag: v1.30.0_46-dev
+    # -- image pull policy
+    pullPolicy: IfNotPresent
+  env:
+    NODE_ENV: "production"
+
+  service:
+    main:
       enabled: true
-      mountPath: /usr/src/app/upload
-      type: nfs
-      server: 192.168.1.89
-      path: /volume1/k3s/immich
-  resources:
-    requests:
-      cpu: 100m
-      memory: 250Mi
-    limits:
-      memory: 2000Mi
-  sidecars:
-    immich-server:
-      name: immich-server
-      image: ghcr.io/immich-app/immich-server:v1.46.1
-      volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      command: ["/bin/sh"]
-      args:
-        - ./start-server.sh
-      env:
-        - name: NODE_ENV
-          value: "production"
-        - name: DB_DATABASE_NAME
-          value: immich
-        - name: DB_HOSTNAME 
-          value: postgres-rw.cloudnative-pg
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-      envFrom:
-        - secretRef:
-            name: immich-secrets
+      primary: true
+      type: ClusterIP
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 3000
+          protocol: HTTP
 
-    immich-microservices:
-      name: immich-microservices
-      image: ghcr.io/immich-app/immich-server:v1.46.1
-      volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      command: ["/bin/sh"]
-      args:
-        - ./start-microservices.sh
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-      envFrom:
-      - secretRef:
-          name: immich-secrets
+  command: "/bin/sh"
+  args:
+    - "./entrypoint.sh"
 
-    immich-redis:
-      name: immich-redis
-      image: public.ecr.aws/docker/library/redis:7.0.8
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-        - name: REDIS_REPLICATION_MODE
-          value: master
-      command: ["redis-server"]
-    immich-web:
-      name: immich-web
-      image: ghcr.io/immich-app/immich-web:v1.46.1
-      volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-        - name: PUBLIC_IMMICH_SERVER_URL
-          value: http://localhost:3001
-      command: ["/bin/sh"]
-      args:
-        - ./entrypoint.sh
-      envFrom:
-      - secretRef:
-          name: immich-secrets
+proxy:
+  enabled: true
+  image:
+    # -- image repository
+    repository: altran1502/immich-proxy
+    # -- image tag
+    tag: v1.30.0_46-dev
+    # -- image pull policy
+    pullPolicy: IfNotPresent
 
-    immich-machinelearning:
-      name: immich-machinelearning
-      image: ghcr.io/immich-app/immich-machine-learning:v1.46.1
-      volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      command: ["/bin/sh"]
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-      args:
-        - ./entrypoint.sh
-      envFrom:
-      - secretRef:
-          name: immich-secrets
+  service:
+    main:
+      enabled: true
+      primary: true
+      type: ClusterIP
+      ports:
+        http:
+          enabled: true
+          primary: true
+          port: 8080
+          protocol: HTTP
 
-# resources:
-#   requests:
-#     cpu: 23m
-#     memory: 2975M
-#   limits:
-#     memory: 6572M
+ingress:
+  main:
+    enabled: true
+    ingressClassName: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      hajimari.io/appName: "Immich"
+      hajimari.io/icon: heroicons:photo
+    hosts:
+      - host: &host photos.toolstowelsandfroods.com
+        paths:
+          - path: /
+    tls:
+      - hosts:
+          - *host
 
+persistence:
+  library:
+    enabled: true
+    mountPath: /usr/src/app/upload
+    type: nfs
+    server: 192.168.1.89
+    path: /volume1/k3s/immich
+  geocoding-dump:
+    enabled: true
+    type: emptyDir
+    mountPath: /usr/src/app/.reverse-geocoding-dump
+    # -- Set the medium to "Memory" to mount a tmpfs (RAM-backed filesystem) instead
+    # of the storage medium that backs the node.
+    medium: # Memory
+    # -- If the `SizeMemoryBackedVolumes` feature gate is enabled, you can
+    # specify a size for memory backed volumes.
+    sizeLimit: # 1Gi
+
+global:
+  # -- Set an override for the prefix of the fullname
+  nameOverride:
+  # -- Set the entire name definition
+  fullnameOverride:
+  # -- Set additional global labels. Helm templates can be used.
+  labels: {}
+  # -- Set additional global annotations. Helm templates can be used.
+  annotations: {}
+
+controller:
+  # -- enable the controller.
+  enabled: false
+
+serviceAccount:
+  create: false
+
+# -- Probe configuration
+# -- [[ref]](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+# @default -- See below
+probes:
+  # -- Liveness probe configuration
+  # @default -- See below
+  liveness:
+    # -- Enable the liveness probe
+    enabled: true
+    # -- Set this to `true` if you wish to specify your own livenessProbe
+    custom: false
+    # -- The spec field contains the values for the default livenessProbe.
+    # If you selected `custom: true`, this field holds the definition of the livenessProbe.
+    # @default -- See below
+    spec:
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+
+  # -- Redainess probe configuration
+  # @default -- See below
+  readiness:
+    # -- Enable the readiness probe
+    enabled: true
+    # -- Set this to `true` if you wish to specify your own readinessProbe
+    custom: false
+    # -- The spec field contains the values for the default readinessProbe.
+    # If you selected `custom: true`, this field holds the definition of the readinessProbe.
+    # @default -- See below
+    spec:
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+
+  # -- Startup probe configuration
+  # @default -- See below
+  startup:
+    # -- Enable the startup probe
+    enabled: true
+    # -- Set this to `true` if you wish to specify your own startupProbe
+    custom: false
+    # -- The spec field contains the values for the default startupProbe.
+    # If you selected `custom: true`, this field holds the definition of the startupProbe.
+    # @default -- See below
+    spec:
+      initialDelaySeconds: 0
+      timeoutSeconds: 1
+      ## This means it has a maximum of 5*30=150 seconds to start up before it fails
+      periodSeconds: 5
+      failureThreshold: 30
+
+termination:
+  gracePeriodSeconds:
