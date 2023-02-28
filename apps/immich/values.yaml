@@ -156,7 +156,7 @@ app-template:
       - secretRef:
           name: immich-secrets
     immich-db:
-      name: immich
+      name: immich-db
       image: postgres:14
       env:
         POSTGRES_USER: immich
