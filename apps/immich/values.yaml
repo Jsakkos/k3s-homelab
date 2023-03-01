@@ -3,7 +3,7 @@ app-template:
   namespace: immich
   image:
     repository: ghcr.io/immich-app/immich-proxy
-    tag: v1.46.1
+    tag: v1.49.0
   env:
     IMMICH_SERVER_URL: http://localhost:3001
     IMMICH_WEB_URL: http://localhost:3000
@@ -18,6 +18,10 @@ app-template:
         name: immich-secrets
   service:
     main:
+      enabled: true
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      externalIPs: ["192.168.50.225","192.168.50.226","192.168.50.227","192.168.50.228"]
       ports:
         http:
           port: 8080
@@ -53,7 +57,7 @@ app-template:
   sidecars:
     immich-server:
       name: immich-server
-      image: ghcr.io/immich-app/immich-server:v1.46.1
+      image: ghcr.io/immich-app/immich-server:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -75,7 +79,7 @@ app-template:
 
     immich-microservices:
       name: immich-microservices
-      image: ghcr.io/immich-app/immich-server:v1.46.1
+      image: ghcr.io/immich-app/immich-server:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -112,7 +116,7 @@ app-template:
       command: ["redis-server"]
     immich-web:
       name: immich-web
-      image: ghcr.io/immich-app/immich-web:v1.46.1
+      image: ghcr.io/immich-app/immich-web:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
@@ -136,11 +140,10 @@ app-template:
 
     immich-machinelearning:
       name: immich-machinelearning
-      image: ghcr.io/immich-app/immich-machine-learning:v1.46.1
+      image: ghcr.io/immich-app/immich-machine-learning:v1.49.0
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
-      command: ["/bin/sh"]
       env:
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
@@ -150,13 +153,11 @@ app-template:
           value: http://localhost:3003
         - name: REDIS_HOSTNAME
           value: localhost
-      args:
-        - ./entrypoint.sh
       envFrom:
       - secretRef:
           name: immich-secrets
     immich-db:
-      name: immich
+      name: immich-db
       image: postgres:14
       env:
         POSTGRES_USER: immich
