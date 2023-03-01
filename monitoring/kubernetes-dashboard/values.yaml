@@ -26,6 +26,18 @@ kubernetes-dashboard:
     limits:
       cpu: 2
       memory: 200Mi
+  service:
+    main:
+      enabled: true
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      externalIPs: ["192.168.50.225"]
+      ports:
+        - name: dashboard-port
+        nodePort: 30001
+        port: 80
+        protocol: TCP
+        targetPort: 8443
   ingress:
     main:
       enabled: true
@@ -35,11 +47,20 @@ kubernetes-dashboard:
         hajimari.io/icon: mdi:kubernetes 
         hajimari.io/appName: Dashboard
         hajimari.io/info: Kubernetes dashboard
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+          - backend:
+              path: /dashboard(/|$)(.*)
       hosts:
         - host: &host k3s.toolstowelsandfroods.com
-          paths:
-            - path: /
-              pathType: Prefix
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: kubernetes-dashboard
+                    port:
+                      name: dashboard-port
+                path: /dashboard
+                pathType: Prefix
       tls:
         - secretName: kubernetes-dashboard-tls-certificate
           hosts:
