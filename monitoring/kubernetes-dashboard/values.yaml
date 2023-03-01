@@ -33,7 +33,7 @@ kubernetes-dashboard:
       externalTrafficPolicy: Local
       externalIPs: ["192.168.50.225"]
       ports:
-        - name: dashboard-port
+      - name: dashboard-port
         nodePort: 30001
         port: 80
         protocol: TCP
