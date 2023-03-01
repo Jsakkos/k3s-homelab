@@ -144,7 +144,6 @@ app-template:
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
-      command: ["/bin/sh"]
       env:
         - name: IMMICH_SERVER_URL
           value: http://localhost:3001
@@ -154,8 +153,6 @@ app-template:
           value: http://localhost:3003
         - name: REDIS_HOSTNAME
           value: localhost
-      args:
-        - ./entrypoint.sh
       envFrom:
       - secretRef:
           name: immich-secrets
