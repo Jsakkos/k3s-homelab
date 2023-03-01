@@ -18,6 +18,10 @@ app-template:
         name: immich-secrets
   service:
     main:
+      enabled: true
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      externalIPs: ["192.168.50.225","192.168.50.226","192.168.50.227","192.168.50.228"]
       ports:
         http:
           port: 8080
