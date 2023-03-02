@@ -32,12 +32,6 @@ kubernetes-dashboard:
       type: LoadBalancer
       externalTrafficPolicy: Local
       externalIPs: ["192.168.50.225"]
-      ports:
-      - name: dashboard-port
-        nodePort: 30001
-        port: 80
-        protocol: TCP
-        targetPort: 8443
   ingress:
     main:
       enabled: true
@@ -52,14 +46,11 @@ kubernetes-dashboard:
         - host: &host k3s.toolstowelsandfroods.com
           http:
             paths:
-              - backend:
-                  service:
-                    name: kubernetes-dashboard
-                    port:
-                      name: dashboard-port
-                path: /dashboard
-                pathType: Prefix
-      tls:
+            - path: /
+              backend:
+                serviceName: kubernetes-dashboard
+                servicePort: 443
+       tls:
         - secretName: kubernetes-dashboard-tls-certificate
           hosts:
             - *host
