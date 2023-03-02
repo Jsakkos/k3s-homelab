@@ -48,7 +48,6 @@ kubernetes-dashboard:
             paths:
             - path: /
               backend:
-                serviceName: kubernetes-dashboard
                 servicePort: 443
        tls:
         - secretName: kubernetes-dashboard-tls-certificate
