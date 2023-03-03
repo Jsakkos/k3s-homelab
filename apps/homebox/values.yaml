@@ -45,4 +45,4 @@ app-template:
       storageClass: longhorn
       mountPath: /data
       accessMode : ReadWriteMany
-      storage: 10Gi
+      size: 10Gi
