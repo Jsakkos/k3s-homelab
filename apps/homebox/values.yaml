@@ -1,0 +1,46 @@
+app-template:
+  controller:
+    type: statefulset
+    replicas: 1
+  image:
+    repository: ghcr.io/hay-kot/homebox
+    tag: latest
+    pullPolicy: Always
+  env:
+    TZ: America/Los_Angeles
+    HBOX_LOG_LEVEL: info
+    HBOX_LOG_FORMAT: text
+    HBOX_WEB_MAX_UPLOAD_SIZE: 10
+  service:
+    main:
+      enabled: true
+      type: LoadBalancer
+      externalTrafficPolicy: Local
+      externalIPs: ["192.168.50.225"]
+      ports:
+        http:
+          port: 7745
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: 'true'
+        hajimari.io/icon: box
+        hajimari.io/appName: Homebox
+        hajimari.io/info: Inventory and organization
+      ingressClassName: nginx
+      hosts:
+        - host: &host org.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: homebox-tls-certificate
+          hosts:
+            - *host
+  persistence:
+    data:
+      enabled: true
+      storageClass: longhorn
+      mountPath: /data
