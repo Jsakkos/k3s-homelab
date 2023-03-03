@@ -44,3 +44,4 @@ app-template:
       enabled: true
       storageClass: longhorn
       mountPath: /data
+      accessMode : ReadWriteMany
