@@ -158,7 +158,7 @@ app-template:
           name: immich-secrets
     immich-db:
       name: immich-db
-      image: postgres:14
+      image: postgres:15
       env:
         POSTGRES_USER: immich
         POSTGRES_DB: immich
