@@ -1,0 +1,28 @@
+firefly-db:
+  configs:
+    TZ: America/Los_Angeles
+  envFrom:
+    - secretRef:
+        name: firefly-secrets
+
+firefly-iii:
+  configs:
+    TZ: America/Los_Angeles
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: &host firefly.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: firefly-tls-certificate
+          hosts:
+            - *host
+  envFrom:
+    - secretRef:
+        name: firefly-secrets
