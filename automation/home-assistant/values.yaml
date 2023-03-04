@@ -23,6 +23,7 @@ app-template:
           trusted_proxies:
             - 192.168.50.11
             - 192.168.50.12
+            - 192.168.50.0/24
           port: 8123
 
   ingress:
@@ -77,10 +78,20 @@ app-template:
         enabled: true
         ingressClassName: nginx
         annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
           hajimari.io/appName: "HASS Config"
           hajimari.io/icon: cib:visual-studio-code
           hajimari.io/enable: "true"
           hajimari.io/info: VS Code for HASS configuration editing
+        hosts:
+        - host: &host hassconfig.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: hassconfig-tls-certificate
+          hosts:
+            - *host
   
       volumeMounts:
         - name: config
