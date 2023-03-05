@@ -1,0 +1,55 @@
+app-template:
+  controller:
+    type: statefulset
+    replicas: 1
+  image:
+    repository: esphome/esphome
+    tag: 2023.2.4
+  service:
+    main:
+      ports:
+        http:
+          port: 6052
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: "true"
+        hajimari.io/icon: simple-icons:esphome
+        hajimari.io/info: Programs esphome devices
+        hajimari.io/group: automation
+        hajimari.io/appName: ESPHome
+      ingressClassName: nginx
+      hosts:
+        - host: &host esphome.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: esphome-tls-certificate
+          hosts:
+            - *host
+  persistence:
+    secrets:
+      enabled: true
+      type: secret
+      name: esphome-secrets
+      mountPath: /config/secrets.yaml
+      subPath: secrets.yaml
+    esphome-cache:
+      enabled: true
+      type: emptyDir
+      mountPath: /config/.esphome
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512M
+    limits:
+      memory: 2048M
+   volumeClaimTemplates:
+    - name: config
+      mountPath: /config
+      accessMode: ReadWriteOnce
+      size: 5Gi
+      storageClass: longhorn
