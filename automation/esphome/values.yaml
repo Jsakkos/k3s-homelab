@@ -47,9 +47,9 @@ app-template:
       memory: 512M
     limits:
       memory: 2048M
-   volumeClaimTemplates:
-    - name: config
-      mountPath: /config
-      accessMode: ReadWriteOnce
-      size: 5Gi
-      storageClass: longhorn
+ volumeClaimTemplates:
+  - name: config
+    mountPath: /config
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    storageClass: longhorn
