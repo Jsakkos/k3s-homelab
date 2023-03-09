@@ -42,7 +42,7 @@ app-template:
   persistence:
     data:
       enabled: true
-      storageClass: longhorn-homebox
+      storageClass: longhorn
       mountPath: /data
       accessMode : ReadWriteMany
       size: 10Gi
