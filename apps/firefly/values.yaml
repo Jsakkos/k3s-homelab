@@ -4,8 +4,8 @@ firefly-db:
   envFrom:
     - secretRef:
         name: firefly-secrets
-  storage:
-    class: longhorn
+  storageClass: longhorn
+
 firefly-iii:
   configs:
     TZ: America/Los_Angeles
