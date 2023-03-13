@@ -5,6 +5,8 @@ app-template:
   image:
     repository: esphome/esphome
     tag: 2023.2.4
+  env:
+    ESPHOME_DASHBOARD_USE_PING: true
   service:
     main:
       ports:
@@ -26,6 +28,10 @@ app-template:
           paths:
             - path: /
               pathType: Prefix
+              backend:
+                service:
+                  port:
+                    number: 6052
       tls:
         - secretName: esphome-tls-certificate
           hosts:
