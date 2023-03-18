@@ -29,7 +29,7 @@ app-template:
       spec:
         httpGet:
           path: /minio/health/live
-          port: *api-port
+          port: 9000
         initialDelaySeconds: 0
         periodSeconds: 10
         timeoutSeconds: 1
