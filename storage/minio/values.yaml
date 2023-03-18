@@ -11,7 +11,7 @@ app-template:
     MINIO_BROWSER_REDIRECT_URL: https://minio.toolstowelsandfroods.com
   envFrom:
     - secretRef:
-        name: minio-secret
+        name: minio-secrets
   args: ["server", "/data", "--console-address", ":9001"]
   service:
     main:
