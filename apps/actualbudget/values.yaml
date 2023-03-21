@@ -1,0 +1,45 @@
+app-template:
+  image:
+    repository: ghcr.io/actualbudget/actual-server
+    tag: 23.3.2
+    pullPolicy: Always
+  env:
+    TZ: America/Los_Angeles
+  service:
+    main:
+      ports:
+        http:
+          port: 5006
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: 'true'
+        hajimari.io/icon: piggy-bank
+        hajimari.io/appName: Actual Budget
+        hajimari.io/info: Personal finance
+      ingressClassName: nginx
+      hosts:
+        - host: &host actualbudget.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: actualbudget-tls-certificate
+          hosts:
+            - *host
+    persistence:
+      data:
+        enabled: true
+        mountPath: /data
+        storageClass: longhorn
+        accessMode: ReadWriteMany
+        size: 2Gi
+        retain: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 52M
+      limits:
+        memory: 256M
