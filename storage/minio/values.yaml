@@ -47,7 +47,6 @@ app-template:
         hajimari.io/icon: bucket
         hajimari.io/appName: MinIO
         hajimari.io/info: MinIO offers high-performance, S3 compatible object storage
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
       hosts:
        - host: &host minio.toolstowelsandfroods.com
          paths:
