@@ -27,12 +27,12 @@ app-template:
         hajimari.io/info: Personal finance
       ingressClassName: nginx
       hosts:
-        - host: &host actualbudget.toolstowelsandfroods.com
+        - host: &host budget.toolstowelsandfroods.com
           paths:
             - path: /
               pathType: Prefix
       tls:
-        - secretName: actualbudget-tls-certificate
+        - secretName: budget-tls-certificate
           hosts:
             - *host
     persistence:
