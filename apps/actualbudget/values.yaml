@@ -1,4 +1,8 @@
 app-template:
+  controller:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    type: statefulset
   image:
     repository: ghcr.io/actualbudget/actual-server
     tag: 23.3.2
@@ -8,9 +12,6 @@ app-template:
   service:
     main:
       enabled: true
-      type: LoadBalancer
-      externalTrafficPolicy: Local
-      externalIPs: ["192.168.50.230"]  
       ports:
         http:
           port: 5006
@@ -19,6 +20,7 @@ app-template:
       enabled: true
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         hajimari.io/enable: 'true'
         hajimari.io/icon: piggy-bank
         hajimari.io/appName: Actual Budget
