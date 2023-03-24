@@ -11,7 +11,6 @@ app-template:
     PHOTOPRISM_STORAGE_PATH: /photoprism/storage
     PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
     ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
-    # PHOTOPRISM_ADMIN_PASSWORD: "please-change"     # Initial admin password: PLEASE CHANGE!
     # PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
     # PHOTOPRISM_PUBLIC: "true"                     # No authentication required (disables password protection)
     # PHOTOPRISM_READONLY: "false"                   # Don't modify originals directory (reduced functionality)
@@ -54,12 +53,12 @@ app-template:
         hajimari.io/info: Manage Photos
         hajimari.io/group: media
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
-    hosts:
-     - host: &host photoprism.toolstowelsandfroods.com
-       paths:
-         - path: /
-           pathType: Prefix
-    tls:
-      - secretName: photoprism-tls-certificate
-        hosts:
-          - *host
+      hosts:
+       - host: &host photoprism.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: photoprism-tls-certificate
+          hosts:
+            - *host
