@@ -1,5 +1,5 @@
 photoprism:
-  replicaCount: 1  
+  replicaCount: 1 
   config:
     PHOTOPRISM_ORIGINALS_LIMIT: 10000
   envFrom:
@@ -34,7 +34,7 @@ photoprism:
     - name: photoprism
       nfs:
         server: 192.168.1.89
-        path: "volume1/k3s/photoprism/storage"
+        path: "/volume1/k3s/photoprism/storage"
 
   ingress:
     main:
