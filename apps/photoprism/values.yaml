@@ -56,3 +56,5 @@ photoprism:
         - secretName: photoprism-tls-certificate
           hosts:
             - *host
+  database:
+    driver: sqlite
