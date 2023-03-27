@@ -1,23 +1,40 @@
 photoprism:
+  replicaCount: 1  
   config:
     PHOTOPRISM_ORIGINALS_LIMIT: 10000
   envFrom:
     - secretRef:
         name: photoprism-secrets
   persistence:
-    storage:
-      enabled: true
-      mountPath: /photoprism/storage
-      type: nfs
-      server: 192.168.1.89
-      path: "/volume1/k3s/photoprism/storage"
-
-    originals:
-      enabled: true
-      mountPath: "/photoprism/originals"
-      type: nfs
-      server: 192.168.1.89
-      path: "/volume1/k3s/photoprism/originals"
+    enabled: true
+    cachePath: &cachePath /assets/cache
+    importPath: &importPath /assets/photos/import
+    exportPath: &exportPath /assets/photos/export
+    originalsPath: &originalsPath /assets/photos/originals
+    volumeMounts:
+    - name: originals
+      mountPath: *originalsPath
+      subPath: "media/photos"
+    - name: photoprism
+      mountPath: *cachePath
+      subPath: "cache"
+    - name: photoprism
+      mountPath: *importPath
+      subPath: "import"
+    - name: photoprism
+      mountPath: *exportPath
+      subPath: "export"
+    volumes:
+    - name: originals
+      nfs:
+        server: 192.168.1.89
+        path: "/volume1/k3s/photoprism/originals"
+        readOnly: true     # PhotoPrism should not delete your originals, but just to be safe...
+    # Photoprism-only share for storing image thumbnails, etc.
+    - name: photoprism
+      nfs:
+        server: 192.168.1.89
+        path: "volume1/k3s/photoprism/storage"
 
   ingress:
     main:
