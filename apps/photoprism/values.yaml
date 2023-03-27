@@ -1,40 +1,38 @@
-photoprism:
-  replicaCount: 1 
-  config:
-    PHOTOPRISM_ORIGINALS_LIMIT: 10000
+app-template:
+  controller:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    type: statefulset
+    replicas: 1
+  image:
+    repository: docker.io/photoprism/photoprism
+    tag: latest
+  env:
+    PHOTOPRISM_STORAGE_PATH: /photoprism/storage
+    PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
   envFrom:
     - secretRef:
         name: photoprism-secrets
+    PHOTOPRISM_ORIGINALS_LIMIT: 10000 # in MB (default 1000)
   persistence:
-    enabled: true
-    cachePath: &cachePath /assets/cache
-    importPath: &importPath /assets/photos/import
-    exportPath: &exportPath /assets/photos/export
-    originalsPath: &originalsPath /assets/photos/originals
-    volumeMounts:
-    - name: originals
-      mountPath: *originalsPath
-      subPath: "media/photos"
-    - name: photoprism
-      mountPath: *cachePath
-      subPath: "cache"
-    - name: photoprism
-      mountPath: *importPath
-      subPath: "import"
-    - name: photoprism
-      mountPath: *exportPath
-      subPath: "export"
-    volumes:
-    - name: originals
-      nfs:
-        server: 192.168.1.89
-        path: "/volume1/k3s/photoprism/originals"
-        readOnly: true     # PhotoPrism should not delete your originals, but just to be safe...
-    # Photoprism-only share for storing image thumbnails, etc.
-    - name: photoprism
-      nfs:
-        server: 192.168.1.89
-        path: "/volume1/k3s/photoprism/storage"
+    config:
+      enabled: true
+      mountPath: /photoprism/storage
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/photoprism/storage"
+
+    originals:
+      enabled: true
+      mountPath: "/photoprism/originals"
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/photoprism/originals"
+  service:
+    main:
+      ports:
+        http:
+          port: 2342
 
   ingress:
     main:
@@ -56,5 +54,3 @@ photoprism:
         - secretName: photoprism-tls-certificate
           hosts:
             - *host
-  database:
-    driver: sqlite
