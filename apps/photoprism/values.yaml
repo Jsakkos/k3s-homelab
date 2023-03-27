@@ -10,10 +10,10 @@ app-template:
   env:
     PHOTOPRISM_STORAGE_PATH: /photoprism/storage
     PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
+    PHOTOPRISM_ORIGINALS_LIMIT: 10000 # in MB (default 1000)
   envFrom:
     - secretRef:
         name: photoprism-secrets
-    PHOTOPRISM_ORIGINALS_LIMIT: 10000 # in MB (default 1000)
   persistence:
     config:
       enabled: true
