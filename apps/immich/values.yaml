@@ -128,8 +128,6 @@ app-template:
           name: immich-configmap
       volumeMounts:
         - name: config
-          enabled: true
-          existingClaim: immich-nfs
           mountPath: /config
 # resources:
 #   requests:
