@@ -126,8 +126,8 @@ app-template:
           name: immich-secrets
       - configMapRef:
           name: immich-configmap
-      persistence:
-        config:
+      volumeMounts:
+        - name: config
           enabled: true
           existingClaim: immich-nfs
           mountPath: /config
