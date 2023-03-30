@@ -39,6 +39,10 @@ app-template:
       enabled: true
       existingClaim: immich-nfs
       mountPath: /usr/src/app/upload
+    config:
+      enabled: true
+      existingClaim: immich-nfs
+      mountPath: /config
   resources:
     requests:
       cpu: 100m
