@@ -4,18 +4,11 @@ app-template:
   image:
     repository: ghcr.io/immich-app/immich-proxy
     tag: v1.51.2
-  env:
-    IMMICH_SERVER_URL: http://localhost:3001
-    IMMICH_WEB_URL: http://localhost:3000
-    IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
-    REDIS_HOSTNAME: localhost
-    DB_DATABASE_NAME: immich
-    DB_HOSTNAME: localhost
-    DB_USERNAME: immich
-    NODE_ENV: "production"
   envFrom:
     - secretRef:
         name: immich-secrets
+    - configMapRef:
+        name: immich-configmap
   service:
     main:
       enabled: true
@@ -44,10 +37,8 @@ app-template:
   persistence:
     library:
       enabled: true
+      existingClaim: immich-nfs
       mountPath: /usr/src/app/upload
-      type: nfs
-      server: 192.168.1.89
-      path: /volume1/k3s/immich
   resources:
     requests:
       cpu: 100m
@@ -64,19 +55,11 @@ app-template:
       command: ["/bin/sh"]
       args:
         - ./start-server.sh
-      env:
-        IMMICH_SERVER_URL: http://localhost:3001
-        IMMICH_WEB_URL: http://localhost:3000
-        IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
-        REDIS_HOSTNAME: localhost
-        DB_DATABASE_NAME: immich
-        DB_HOSTNAME: localhost
-        DB_USERNAME: immich
-        NODE_ENV: "production"
       envFrom:
         - secretRef:
             name: immich-secrets
-
+        - configMapRef:
+            name: immich-configmap
     immich-microservices:
       name: immich-microservices
       image: ghcr.io/immich-app/immich-server:v1.51.2
@@ -86,33 +69,20 @@ app-template:
       command: ["/bin/sh"]
       args:
         - ./start-microservices.sh
-      env:
-        IMMICH_SERVER_URL: http://localhost:3001
-        IMMICH_WEB_URL: http://localhost:3000
-        IMMICH_MACHINE_LEARNING_URL: http://localhost:3003
-        REDIS_HOSTNAME: localhost
-        DB_DATABASE_NAME: immich
-        DB_HOSTNAME: localhost
-        DB_USERNAME: immich
-        NODE_ENV: "production"
       envFrom:
       - secretRef:
           name: immich-secrets
-
+      - configMapRef:
+          name: immich-configmap
     immich-redis:
       name: immich-redis
       image: public.ecr.aws/docker/library/redis:7.0.8
       env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
         - name: REDIS_REPLICATION_MODE
           value: master
+      envFrom:
+      - configMapRef:
+          name: immich-configmap
       command: ["redis-server"]
     immich-web:
       name: immich-web
@@ -120,42 +90,25 @@ app-template:
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
-        - name: PUBLIC_IMMICH_SERVER_URL
-          value: http://localhost:3001
       command: ["/bin/sh"]
       args:
         - ./entrypoint.sh
       envFrom:
       - secretRef:
           name: immich-secrets
-
+      - configMapRef:
+          name: immich-configmap
     immich-machinelearning:
       name: immich-machinelearning
       image: ghcr.io/immich-app/immich-machine-learning:v1.51.2
       volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
-      env:
-        - name: IMMICH_SERVER_URL
-          value: http://localhost:3001
-        - name: IMMICH_WEB_URL
-          value: http://localhost:3000
-        - name: IMMICH_MACHINE_LEARNING_URL
-          value: http://localhost:3003
-        - name: REDIS_HOSTNAME
-          value: localhost
       envFrom:
       - secretRef:
           name: immich-secrets
+      - configMapRef:
+          name: immich-configmap
     immich-db:
       name: immich-db
       image: postgres:15
@@ -168,11 +121,16 @@ app-template:
     immich-typesense:
       name: immich-typesense
       image: typesense/typesense:0.24.0
-      env:
-        TYPESENSE_DATA_DIR: /config
       envFrom:
       - secretRef:
           name: immich-secrets
+      - configMapRef:
+          name: immich-configmap
+      persistence:
+        config:
+          enabled: true
+          existingClaim: immich-nfs
+          mountPath: /config
 # resources:
 #   requests:
 #     cpu: 23m
