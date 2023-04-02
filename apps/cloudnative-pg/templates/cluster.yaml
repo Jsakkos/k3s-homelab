@@ -12,7 +12,7 @@ spec:
     size: 20Gi
     storageClass: longhorn
   superuserSecret:
-    name: cloudnative-pg
+    name: cloudnative-pg-secrets
   postgresql:
     parameters:
       max_connections: "300"
