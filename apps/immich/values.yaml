@@ -29,7 +29,8 @@ immich:
                   port:
                     number: 8080
       tls:
-        - hosts:
+        - secretName: immich-tls-certificate
+          hosts:
             - *host
         redis:
           enabled: true
