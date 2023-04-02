@@ -45,6 +45,19 @@ immich:
     enabled: true
   postgresql:
     enabled: true
+    global:
+      postgresql:
+        auth:
+          password:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_PASSWORD    
+          postgres-password:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: POSTGRES_SUPER_PASS  
   persistence:
     library:
       enabled: true
