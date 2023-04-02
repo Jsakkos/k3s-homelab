@@ -2,6 +2,18 @@ immich:
   repository:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
+  common_env:
+    DB_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: immich-secrets
+          key: DB_PASSWORD          
+    JWT_SECRET:
+      valueFrom:
+        secretKeyRef:
+          name: immich-secrets
+          key: JWT_SECRET
+    DB_HOSTNAME: &dbhost postgres-rw.cloudnative-pg.svc.cluster.local
   service:
     main:
       enabled: true
@@ -33,7 +45,7 @@ immich:
   redis:
     enabled: true
   postgresql:
-    enabled: true
+    enabled: false
 
   persistence:
     library:
