@@ -48,17 +48,8 @@ immich:
     global:
       postgresql:
         auth:
-          existingSecret:
-            password:
-              valueFrom:
-                secretKeyRef:
-                  name: immich-secrets
-                  key: DB_PASSWORD    
-            postgres-password:
-              valueFrom:
-                secretKeyRef:
-                  name: immich-secrets
-                  key: POSTGRES_SUPER_PASS  
+          existingSecret: immich-secrets
+
   persistence:
     library:
       enabled: true
