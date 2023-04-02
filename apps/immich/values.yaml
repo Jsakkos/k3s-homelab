@@ -1,51 +1,36 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: immich
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "111"
-spec:
-  destination:
-    namespace: immich
-    server: "https://kubernetes.default.svc"
-  source:
-    path: charts/apps/immich
-    repoURL: "https://github.com/immich-app/immich-charts.git"
-    targetRevision: main
-    helm:
-      values: |-
-
-        envFrom:
-          - secretRef:
-              name: immich-secrets
-          - configMapRef:
-              name: immich-configmap
-        service:
-          main:
-            enabled: true
-            type: LoadBalancer
-            externalTrafficPolicy: Local
-            externalIPs: ["192.168.50.225","192.168.50.226","192.168.50.227","192.168.50.228"]
-            ports:
-              http:
-                port: 8080
-        ingress:
-          main:
-            enabled: true
-            ingressClassName: "nginx"
-            annotations:
-              cert-manager.io/cluster-issuer: letsencrypt-prod
-              nginx.ingress.kubernetes.io/proxy-body-size: "0"
-              hajimari.io/appName: "Immich"
-              hajimari.io/icon: heroicons:photo
-            hosts:
-              - host: &host photos.toolstowelsandfroods.com
-                paths:
-                  - path: /
-            tls:
-              - hosts:
-                  - *host
+immich:
+  envFrom:
+    - secretRef:
+        name: immich-secrets
+    - configMapRef:
+        name: immich-configmap
+  service:
+    main:
+      enabled: true
+      ports:
+        http:
+          port: 8080
+  ingress:
+    main:
+      enabled: true
+        ingressClassName: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        hajimari.io/appName: "Immich"
+        hajimari.io/icon: heroicons:photo
+      hosts:
+        - host: &host photos.toolstowelsandfroods.com
+          paths:
+            - path: /
+              backend:
+                service:
+                  name: immich-proxy
+                  port:
+                    number: 8080
+      tls:
+        - hosts:
+            - *host
         redis:
           enabled: true
         postgresql:
@@ -55,35 +40,6 @@ spec:
             enabled: true
             existingClaim: immich-nfs
             mountPath: /usr/src/app/upload
-        server:
-          image:
-            repository: docker.io/altran1502/immich-server
-            tag: v1.50.1
-        microservice:
-          image:
-            repository: docker.io/altran1502/immich-server
-            tag: v1.50.1
-        machine_learning:
-          image:
-            repository: docker.io/altran1502/immich-machine-learning
-            tag: v1.50.1
-          command: null
-          args: []
-          env:
-            TRANSFORMERS_CACHE: /usr/src/app/.transformers_cache
-        web:
-          image:
-            repository: docker.io/altran1502/immich-web
-            tag: v1.50.1
-        proxy:
-          image:
-            repository: docker.io/altran1502/immich-proxy
-            tag: v1.50.1
-        persistence:
-          transformers-cache:
-            enabled: true
-            type: emptyDir
-            mountPath: /usr/src/app/.transformers_cache
         resources:
           requests:
             cpu: 100m
