@@ -3,10 +3,16 @@ immich:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
   common_env:
-    - secretRef:
-        name: immich-secrets
-    - configMapRef:
-        name: immich-configmap
+    DB_PASSWORD:
+      valueFrom:
+        secretRef:
+          name: immich-secrets
+          key: DB_PASSWORD          
+    JWT_SECRET:
+      valueFrom:
+        secretRef:
+          name: immich-secrets
+          key: JWT_SECRET
   service:
     main:
       enabled: true
