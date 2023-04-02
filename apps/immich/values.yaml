@@ -3,6 +3,7 @@ immich:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
   common_env:
+    DB_PORT: "5432"
     DB_PASSWORD:
       valueFrom:
         secretKeyRef:
