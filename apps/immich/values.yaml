@@ -2,18 +2,6 @@ immich:
   repository:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
-  common_env:
-    DB_PORT: "5432"
-    DB_PASSWORD:
-      valueFrom:
-        secretKeyRef:
-          name: immich-secrets
-          key: DB_PASSWORD            
-    JWT_SECRET:
-      valueFrom:
-        secretKeyRef:
-          name: immich-secrets
-          key: JWT_SECRET
   service:
     main:
       enabled: true
@@ -46,10 +34,7 @@ immich:
     enabled: true
   postgresql:
     enabled: true
-    global:
-      postgresql:
-        auth:
-          existingSecret: immich-secrets
+
   persistence:
     library:
       enabled: true
