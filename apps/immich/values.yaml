@@ -32,18 +32,19 @@ immich:
         - secretName: immich-tls-certificate
           hosts:
             - *host
-        redis:
+    redis:
+      enabled: true
+    postgresql:
+      enabled: true
+      persistence:
+        library:
           enabled: true
-        postgresql:
-          enabled: true
-        persistence:
-          library:
-            enabled: true
-            existingClaim: immich-nfs
-            mountPath: /usr/src/app/upload
-        resources:
-          requests:
-            cpu: 100m
-            memory: 250Mi
-          limits:
-            memory: 6000Mi
+          existingClaim: immich-nfs
+          mountPath: /usr/src/app/upload
+      resources:
+        requests:
+          cpu: 100m
+          memory: 250Mi
+        limits:
+          memory: 6000Mi
+
