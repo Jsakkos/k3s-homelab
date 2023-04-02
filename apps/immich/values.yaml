@@ -6,8 +6,8 @@ immich:
     DB_PASSWORD:
       valueFrom:
         secretKeyRef:
-          name: immich-postgresql
-          key: password            
+          name: immich-secrets
+          key: DB_PASSWORD            
     JWT_SECRET:
       valueFrom:
         secretKeyRef:
@@ -45,7 +45,10 @@ immich:
     enabled: true
   postgresql:
     enabled: true
-
+    global:
+      postgresql:
+        auth:
+          existingSecret: immich-secrets
   persistence:
     library:
       enabled: true
