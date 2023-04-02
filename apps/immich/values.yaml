@@ -3,7 +3,6 @@ immich:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
   common_env:
-    envFrom:
     - secretRef:
         name: immich-secrets
     - configMapRef:
