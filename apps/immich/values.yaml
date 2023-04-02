@@ -5,12 +5,12 @@ immich:
   common_env:
     DB_PASSWORD:
       valueFrom:
-        secretRef:
+        secretKeyRef:
           name: immich-secrets
           key: DB_PASSWORD          
     JWT_SECRET:
       valueFrom:
-        secretRef:
+        secretKeyRef:
           name: immich-secrets
           key: JWT_SECRET
   service:
