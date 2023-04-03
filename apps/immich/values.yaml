@@ -13,7 +13,6 @@ immich:
         secretKeyRef:
           name: immich-secrets
           key: JWT_SECRET
-    DB_HOSTNAME: &dbhost postgres-rw.cloudnative-pg.svc.cluster.local
   service:
     main:
       enabled: true
