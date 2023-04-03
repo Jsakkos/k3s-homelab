@@ -48,7 +48,7 @@ immich:
     global:
       postgresql:
         auth:
-          existingSecret: immich-secrets               
+          existingSecret: immich-postgresql             
   persistence:
     library:
       enabled: true
