@@ -70,6 +70,7 @@ app-template:
       storageClass: longhorn
       accessMode: ReadWriteMany
       mountPath: /usr/src/paperless/data
+      size: 100Mi
     media:
       enabled: true
       mountPath: /usr/src/paperless/media
