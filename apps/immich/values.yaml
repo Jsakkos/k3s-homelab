@@ -46,7 +46,21 @@ immich:
     enabled: true
   postgresql:
     enabled: false
-
+  server:
+    initContainers:
+    - name: init-database
+      image: postgres:14
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: PGHOST
+          value: postgres-rw.cloudnative-pg.svc.cluster.local
+        - name: PGUSER
+          value: immich
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: immich-secrets
+              key: DB_PASSWORD
   persistence:
     library:
       enabled: true
