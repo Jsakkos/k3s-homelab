@@ -48,20 +48,32 @@ immich:
     enabled: false
   server:
     initContainers:
-    - name: init-database
-      image: postgres:14
-      imagePullPolicy: IfNotPresent
-      env:
-        - name: PGHOST
-          value: postgres-rw.cloudnative-pg.svc.cluster.local
-        - name: PGUSER
-          value: immich
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: immich-secrets
-              key: DB_PASSWORD
-      command: ["/bin/bash", "-c", "psql -U immich -h postgres-rw.cloudnative-pg.svc.cluster.local -c 'CREATE DATABASE immich;'"]
+      init-db:
+        image: ghcr.io/onedr0p/postgres-initdb:14.6
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: POSTGRES_HOST
+            value: postgres-rw.cloudnative-pg.svc.cluster.local
+          - name: POSTGRES_DB
+            value: immich
+          - name: POSTGRES_USER
+            value: immich
+          - name: POSTGRES_PASS
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: DB_PASSWORD
+          - name: POSTGRES_SUPER_PASS
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: POSTGRES_SUPER_PASS
+          - name: POSTGRES_SUPER_USER
+            valueFrom:
+              secretKeyRef:
+                name: immich-secrets
+                key: POSTGRES_SUPER_USER
+                
   persistence:
     library:
       enabled: true
