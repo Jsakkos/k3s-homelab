@@ -48,22 +48,6 @@ immich:
       postgresql:
         auth:
           existingSecret: immich-secrets
-  typesense:
-    enabled: true
-    env:
-      TYPESENSE_DATA_DIR: /tsdata
-      TYPESENSE_API_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: immich-secrets
-            key: TYPESENSE_API_KEY
-    persistence:
-      tsdata:
-        # Enabling typesense persistence is recommended to avoid slow reindexing
-        enabled: true
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        storageClass: longhorn
   persistence:
     library:
       enabled: true
