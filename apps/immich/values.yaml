@@ -57,12 +57,12 @@ immich:
           secretKeyRef:
             name: immich-secrets
             key: TYPESENSE_API_KEY
-    persistence:
-      tsdata:
-        # Enabling typesense persistence is recommended to avoid slow reindexing
-        enabled: true
-        accessMode: ReadWriteOnce
-        size: 1Gi
+#    persistence:
+#      tsdata:
+#        # Enabling typesense persistence is recommended to avoid slow reindexing
+#        enabled: true
+#        accessMode: ReadWriteOnce
+#        size: 1Gi
   persistence:
     library:
       enabled: true
