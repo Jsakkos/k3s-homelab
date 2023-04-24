@@ -4,7 +4,7 @@ metadata:
   name: longhorn-recurring-backup
   namespace: longhorn-system
 spec:
-  cron: "*/30 * * * *"
+  cron: "0 0 * * *"
   task: "backup"
   groups:
   - default
