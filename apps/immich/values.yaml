@@ -42,13 +42,6 @@ immich:
         ports:
           http:
             port: 8080
-    persistence:
-      library:
-        enabled: true
-  web:
-    persistence:
-      library:
-        enabled: true
   redis:
     enabled: true
   postgresql:
