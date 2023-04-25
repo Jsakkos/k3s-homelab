@@ -13,33 +13,35 @@ immich:
         secretKeyRef:
           name: immich-secrets
           key: JWT_SECRET
-  service:
-    main:
-      enabled: true
-      type: LoadBalancer
-      externalTrafficPolicy: Local
-      externalIPs: ["192.168.50.225","192.168.50.226","192.168.50.227","192.168.50.228"]
-      ports:
-        http:
-          port: 8080
-  ingress:
-    main:
-      enabled: true
-      ingressClassName: "nginx"
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/proxy-body-size: "0"
-        hajimari.io/appName: "Immich"
-        hajimari.io/icon: heroicons:photo
-      hosts:
-        - host: &host photos.toolstowelsandfroods.com
-          paths:
-            - path: /
 
-      tls:
-        - secretName: immich-tls-certificate
-          hosts:
-            - *host
+  proxy:
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-prod
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hajimari.io/appName: "Immich"
+          hajimari.io/icon: heroicons:photo
+        hosts:
+          - host: &host photos.toolstowelsandfroods.com
+            paths:
+              - path: /
+
+        tls:
+          - secretName: immich-tls-certificate
+            hosts:
+              - *host
+    service:
+      main:
+        enabled: true
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        externalIPs: ["192.168.50.225","192.168.50.226","192.168.50.227","192.168.50.228"]
+        ports:
+          http:
+            port: 8080
   redis:
     enabled: true
   postgresql:
