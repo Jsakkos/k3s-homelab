@@ -2,7 +2,7 @@ immich:
   repository:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
-  common_env:
+  env:
     DB_PASSWORD:
       valueFrom:
         secretKeyRef:
@@ -48,11 +48,12 @@ immich:
       postgresql:
         auth:
           existingSecret: immich-secrets
-  persistence:
-    library:
-      enabled: true
-      existingClaim: immich-nfs
-      mountPath: /usr/src/app/upload
+  immich:
+    persistence:
+      library:
+        enabled: true
+        existingClaim: immich-nfs
+        mountPath: /usr/src/app/upload
   resources:
     requests:
       cpu: 100m
