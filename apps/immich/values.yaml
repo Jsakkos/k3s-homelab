@@ -42,6 +42,13 @@ immich:
         ports:
           http:
             port: 8080
+    persistence:
+      library:
+        enabled: true
+  web:
+    persistence:
+      library:
+        enabled: true
   redis:
     enabled: true
   postgresql:
@@ -56,6 +63,21 @@ immich:
         enabled: true
         existingClaim: immich-nfs
         mountPath: /usr/src/app/upload
+  typesense:
+    enabled: true
+    env:
+      TYPESENSE_DATA_DIR: /tsdata
+      TYPESENSE_API_KEY: 
+        valueFrom:
+          secretKeyRef:
+            name: immich-secrets
+            key: TYPESENSE_API_KEY
+    persistence:
+      tsdata:
+        enabled: true
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: longhorn
   resources:
     requests:
       cpu: 100m
