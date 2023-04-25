@@ -2,7 +2,7 @@ immich:
   repository:
     name: immich-charts
     url: https://github.com/immich-app/immich-charts
-  env:
+  common_env:
     DB_PASSWORD:
       valueFrom:
         secretKeyRef:
