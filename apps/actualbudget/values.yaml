@@ -5,8 +5,7 @@ app-template:
     type: statefulset
   image:
     repository: ghcr.io/actualbudget/actual-server
-    tag: 23.3.2
-    pullPolicy: Always
+    tag: 23.5.0
   env:
     TZ: America/Los_Angeles
   service:
