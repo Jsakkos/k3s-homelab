@@ -1,0 +1,61 @@
+app-template:
+  controller:
+    replicas: 1
+    type: statefulset
+  image:
+    repository: ghcr.io/onedr0p/qbittorrent
+    tag: 4.5.3
+  env:
+    TZ: America/Los_Angeles
+    QBITTORRENT__PORT: &port 80
+    QBITTORRENT__BT_PORT: &port-bt 57464
+  hostname: qbittorrent
+  service:
+    main:
+      ports:
+        http:
+          port: *port
+        bt:
+          port: *port-bt
+  podAnnotations:
+    setGateway: "true"
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: "true"
+        hajimari.io/icon: download
+        hajimari.io/appName: qBittorrent
+        hajimari.io/info: Open-source software alternative to µTorrent
+      hosts:
+        - host: &host torrent.toolstowelsandfroods.com
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - secretName: torrent-tls-certificate
+          hosts:
+            - *host
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: "OnRootMismatch"
+  persistence:
+    config:
+      enabled: true
+      existingClaim: qbittorrent
+    data:
+      enabled: true
+      type: nfs
+      server: 192.168.1.89
+      path: "/volume1/k3s/downloads"
+      mountPath: /data
+  resources:
+    requests:
+      cpu: 10m
+      memory: 250Mi
+    limits:
+      memory: 6000Mi
