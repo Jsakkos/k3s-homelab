@@ -1,0 +1,57 @@
+app-template:
+  controller:
+    replicas: 1
+    type: statefulset
+  image:
+    repository: ghcr.io/onedr0p/readarr-develop
+    tag: 0.1.6.1867@sha256:e40ce8e09a0f3e5ed47ac71098b146ef55c915c744abd8d069ead82cc2d00754
+  env:
+    TZ: America/Los_Angeles
+    READARR__INSTANCE_NAME: Readarr
+    READARR__PORT: &port 80
+    READARR__LOG_LEVEL: info
+  service:
+    main:
+      ports:
+        http:
+          port: *port
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: "true"
+        hajimari.io/icon: book-open-variant
+        hajimari.io/appName: Readarr
+        hajimari.io/info: Ebook collection manager for Usenet and BitTorrent users
+      hosts:
+       - host: &host books.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: readarr-tls-certificate
+          hosts:
+            - *host  
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: "OnRootMismatch"
+  persistence:
+    config:
+      enabled: true
+      existingClaim: readarr
+    data:
+      enabled: true
+      type: nfs
+      server: 192.168.1.89
+      path: /volume1/k3s/data
+      mountPath: /data
+  resources:
+    requests:
+      cpu: 10m
+      memory: 250Mi
+    limits:
+      memory: 750Mi

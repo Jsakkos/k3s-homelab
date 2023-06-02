@@ -11,4 +11,4 @@ stacks:
   - name: storage
   - name: monitoring
   - name: databases
-  - name: downloads
+  - name: media
