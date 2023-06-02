@@ -1,0 +1,56 @@
+app-template:
+  controller:
+    replicas: 1
+    type: statefulset
+  image:
+    repository: ghcr.io/onedr0p/radarr-develop
+    tag: 4.5.2.7388
+  env:
+    TZ: America/Los_Angeles
+    RADARR__INSTANCE_NAME: Radarr
+    RADARR__PORT: &port 80
+    RADARR__LOG_LEVEL: info
+  service:
+    main:
+      ports:
+        http:
+          port: *port
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        hajimari.io/enable: "true"
+        hajimari.io/icon: filmstrip
+        hajimari.io/appName: Radarr
+        hajimari.io/info: Movie collection manager for Usenet and BitTorrent users
+      hosts:
+       - host: &host movies.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: radarr-tls-certificate
+          hosts:
+            - *host
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: "OnRootMismatch"
+  persistence:
+    config:
+      enabled: true
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      size: 1Gi
+    media:
+      enabled: true
+      type: nfs
+      server: 192.168.1.89
+      path: /volume1/k3s/data
+      mountPath: /media
+  resources:
+    requests:
+      cpu: 10m
+      memory: 250Mi
