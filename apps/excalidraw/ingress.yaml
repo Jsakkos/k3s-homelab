@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: excalidraw
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: &host draw.toolstowelsandfroods.com
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: excalidraw
+                port:
+                  name: http
+  tls:
+    - secretName: excalidraw-tls-certificate
+      hosts:
+        - *host
+
