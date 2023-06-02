@@ -3,8 +3,8 @@ app-template:
     replicas: 1
     type: statefulset
   image:
-    repository: ghcr.io/onedr0p/readarr-develop
-    tag: 0.1.6.1867@sha256:e40ce8e09a0f3e5ed47ac71098b146ef55c915c744abd8d069ead82cc2d00754
+    repository: ghcr.io/onedr0p/readarr-nightly
+    tag: 0.1.7.1882@sha256:3b8b9f4b8e3980efd2f94e8996585f658614da857d3cb25f8a7c893ddab43eeb
   env:
     TZ: America/Los_Angeles
     READARR__INSTANCE_NAME: Readarr
@@ -45,12 +45,12 @@ app-template:
       storageClass: longhorn
       accessMode: ReadWriteMany
       size: 1Gi
-    data:
+    media:
       enabled: true
       type: nfs
       server: 192.168.1.89
       path: /volume1/k3s/data
-      mountPath: /data
+      mountPath: /media
   resources:
     requests:
       cpu: 10m
