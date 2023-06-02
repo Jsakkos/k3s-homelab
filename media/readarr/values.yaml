@@ -42,7 +42,9 @@ app-template:
   persistence:
     config:
       enabled: true
-      existingClaim: readarr
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      size: 1Gi
     data:
       enabled: true
       type: nfs
