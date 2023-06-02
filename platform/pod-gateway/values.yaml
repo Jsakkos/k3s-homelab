@@ -18,6 +18,8 @@ pod-gateway:
       env:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn
+        - name: SERVER_REGIONS
+          value: California
       envFrom:
         - secretRef:
             name: nordvpn-secrets
