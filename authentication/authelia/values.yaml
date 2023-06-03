@@ -20,7 +20,7 @@ authelia:
       user_search_filter: "(uid={0})"
       group_search_base: ou=groups,dc=toolstowelsandfroods,dc=com
 
-jwt_secret:
+  jwt_secret:
     external:
       name: authelia-secrets
       key: jwt_secret
