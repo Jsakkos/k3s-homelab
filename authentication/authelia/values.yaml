@@ -61,11 +61,12 @@ authelia:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
-  redis:
-    enabled: true
-    enabledSecret: false
-    host: redis.redis.svc.cluster.local
-    port: 6379
+  session:
+    redis:
+      enabled: true
+      enabledSecret: false
+      host: redis.redis.svc.cluster.local
+      port: 6379
   resources:
     requests:
       cpu: 5m
