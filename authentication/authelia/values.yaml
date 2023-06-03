@@ -62,7 +62,7 @@ authelia:
           hosts:
           - *host
   redis:
-    host: redis
+    host: redis.redis.svc.cluster.local:6379
   resources:
     requests:
       cpu: 5m
