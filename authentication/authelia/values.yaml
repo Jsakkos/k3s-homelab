@@ -1,26 +1,30 @@
-app-template:
-  controller:
-    annotations:
-      reloader.stakater.com/auto: "true"
-    type: statefulset
-  image:
-    repository: ghcr.io/authelia/authelia
-    tag: 4.37.5
-  args: ["--config", "/etc/authelia/config.yaml"]
+authelia:
   env:
     TZ: America/Los_Angeles
-  envFrom:
-    - secretRef:
-        name: authelia-secret
-  enableServiceLinks: false
-  service:
-    main:
-      ports:
-        http:
-          port: &port 80
-        metrics:
-          enabled: true
-          port: 8080
+
+  # Authelia configuration
+  domain: auth.toolstowelsandfroods.com
+
+  # LDAP configuration
+  authentication_backend:
+    ldap:
+      host: lldap.toolstowelsandfroods.com
+      port: 389
+      bind_dn: cn=admin,dc=toolstowelsandfroods,dc=com
+      base_dn: dc=toolstowelsandfroods,dc=com
+      bind_password:
+        external:
+          name: authelia-secrets
+          key: bind_password
+      user_search_base: ou=users,dc=toolstowelsandfroods,dc=com
+      user_search_filter: "(uid={0})"
+      group_search_base: ou=groups,dc=toolstowelsandfroods,dc=com
+
+jwt_secret:
+    external:
+      name: authelia-secrets
+      key: jwt_secret
+
   probes:
     liveness: &probes
       enabled: true
@@ -64,26 +68,27 @@ app-template:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
-  podSecurityContext:
-    runAsUser: 1028
-    runAsGroup: 100
-    fsGroup: 100
-    fsGroupChangePolicy: "OnRootMismatch"
+  # Enable persistence using PersistentVolumeClaim
   persistence:
-    config:
-      enabled: true
-      storageClass: longhorn
-      name: authelia-config
-      subPath: config.yaml
-      mountPath: /etc/authelia/config.yaml
-      readOnly: false
-    db:
-      enabled: true
-      storageClass: longhorn
+    enabled: true
+    size: 1Gi
+    storageClassName: longhorn
+    accessMode: ReadWriteOnce
+
+  # Expose Authelia using a LoadBalancer service
+  service:
+    enabled: true
+    type: LoadBalancer
+    port: 8080
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: "OnRootMismatch"
+
   resources:
     requests:
-      cpu: 10m
-      memory: 250Mi
+      cpu: 5m
+      memory: 10Mi
     limits:
-      memory: 1000Mi
-
+      memory: 200Mi

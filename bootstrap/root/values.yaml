@@ -12,3 +12,4 @@ stacks:
   - name: monitoring
   - name: databases
   - name: media
+  - name: authentication
