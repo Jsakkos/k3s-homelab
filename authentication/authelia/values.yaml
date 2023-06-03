@@ -61,6 +61,8 @@ authelia:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
+  redis:
+    host: redis
   resources:
     requests:
       cpu: 5m
