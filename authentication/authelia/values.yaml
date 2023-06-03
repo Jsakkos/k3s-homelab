@@ -42,30 +42,6 @@ authelia:
       name: authelia-secrets
       key: jwt_secret
 
-  probes:
-    liveness: &probes
-      enabled: true
-      custom: true
-      spec:
-        httpGet:
-          path: /api/health
-          port: *port
-        initialDelaySeconds: 0
-        periodSeconds: 10
-        timeoutSeconds: 1
-        failureThreshold: 3
-    readiness: *probes
-    startup:
-      enabled: false
-  serviceMonitor:
-    main:
-      enabled: true
-      endpoints:
-        - port: metrics
-          scheme: http
-          path: /metrics
-          interval: 1m
-          scrapeTimeout: 10s
   ingress:
     main:
       enabled: true
@@ -91,18 +67,6 @@ authelia:
     size: 1Gi
     storageClassName: longhorn
     accessMode: ReadWriteOnce
-
-  # Expose Authelia using a LoadBalancer service
-  service:
-    enabled: true
-    type: LoadBalancer
-    port: 8080
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: "OnRootMismatch"
-
   resources:
     requests:
       cpu: 5m
