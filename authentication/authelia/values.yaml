@@ -61,12 +61,6 @@ authelia:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
-  # Enable persistence using PersistentVolumeClaim
-  persistence:
-    enabled: true
-    size: 1Gi
-    storageClassName: longhorn
-    accessMode: ReadWriteOnce
   resources:
     requests:
       cpu: 5m
