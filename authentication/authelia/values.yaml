@@ -7,7 +7,6 @@ app-template:
     repository: ghcr.io/authelia/authelia
     # TODO Switch to Authelia release tag on next release
     tag: master@sha256:cc12c2b96ea0af84782ca740ea30d45582c5d801be4633aefc8565ccb4172f87
-  args: ["--config", "/etc/authelia/config.yaml"]
   env:
     TZ: America/Los_Angeles
   enableServiceLinks: false
@@ -108,11 +107,9 @@ app-template:
   persistence:
     config:
       enabled: true
-      type: configMap
-      name: authelia-config
-      subPath: config.yaml
-      mountPath: /etc/authelia/config.yaml
-      readOnly: false
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      size: 1Gi
     db:
       enabled: true
       existingClaim: authelia
