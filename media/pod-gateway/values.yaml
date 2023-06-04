@@ -27,9 +27,17 @@ pod-gateway:
           value: California
         - name: LOG_LEVEL
           value: debug
-      envFrom:
-        - secretRef:
-            name: nordvpn-secrets
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: nordvpn-secrets
+              key: OPENVPN_USER
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nordvpn-secrets
+              key: OPENVPN_PASSWORD
+ 
     netshoot:
       enabled: true
 
