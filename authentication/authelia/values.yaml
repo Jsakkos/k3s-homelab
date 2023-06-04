@@ -93,10 +93,10 @@ app-template:
           hosts:
           - *host
   domain: auth.toolstowelsandfroods.com
-      password:
-        external:
-          name: authelia-secrets
-          key: bind_password
+  password:
+    external:
+      name: authelia-secrets
+      key: bind_password
 
   jwt_secret:
     external:
