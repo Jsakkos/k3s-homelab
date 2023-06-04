@@ -11,10 +11,9 @@ pod-gateway:
     vpn:
       enabled: true
       type: gluetun
-      gluetun:
-        image:
-          repository: ghcr.io/qdm12/gluetun
-          tag: v3.34.2
+      image:
+        repository: docker.io/qmcgaw/gluetun
+        tag: v3.32.0
       env:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn
