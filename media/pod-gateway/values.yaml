@@ -6,12 +6,6 @@ pod-gateway:
   image:
     repository: ghcr.io/angelnu/pod-gateway
     tag: v1.8.1
-  persistence:
-    config:
-      enabled: true
-      storageClass: longhorn
-      accessMode: ReadWriteMany
-      size: 100Mi
   DNS: 172.16.1.1
   addons:
     vpn:
