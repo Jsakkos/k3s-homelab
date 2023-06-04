@@ -58,3 +58,9 @@ pod-gateway:
     image:
       repository: ghcr.io/angelnu/gateway-admision-controller
       tag: v3.7.0
+  persistence:
+    config:
+      enabled: true
+      storageClass: longhorn
+      accessMode: ReadWriteMany
+      size: 500Mi
