@@ -7,38 +7,12 @@ app-template:
     repository: ghcr.io/authelia/authelia
     # TODO Switch to Authelia release tag on next release
     tag: master@sha256:cc12c2b96ea0af84782ca740ea30d45582c5d801be4633aefc8565ccb4172f87
+  args: ["--config", "/etc/authelia/config.yaml"]
   env:
     TZ: America/Los_Angeles
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_GROUPS_DN: ou=groups
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_ADDITIONAL_USERS_DN: ou=people
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_BASE_DN: dc=toolstowelsandfroods,dc=homearpa
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_DISPLAY_NAME_ATTRIBUTE: displayName
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUPS_FILTER: (member={dn})
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_GROUP_NAME_ATTRIBUTE: cn
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_IMPLEMENTATION: custom
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_MAIL_ATTRIBUTE: mail
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_START_TLS: "false"
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_TIMEOUT: 5s
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_URL: ldap://lldap.lldap.svc.cluster.local:3890
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USER: uid=admin,ou=people,dc=home,dc=arpa
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERNAME_ATTRIBUTE: uid
-    AUTHELIA_AUTHENTICATION_BACKEND_LDAP_USERS_FILTER: (&({username_attribute}={input})(objectClass=person))
-    AUTHELIA_AUTHENTICATION_BACKEND_PASSWORD_RESET_DISABLE: "true"
-    AUTHELIA_AUTHENTICATION_BACKEND_REFRESH_INTERVAL: 1m
-    AUTHELIA_DEFAULT_REDIRECTION_URL: https://auth.toolstowelsandfroods.com
-    AUTHELIA_DUO_API_DISABLE: "true"
-    AUTHELIA_LOG_LEVEL: info
-    AUTHELIA_SERVER_DISABLE_HEALTHCHECK: "true"
-    AUTHELIA_SERVER_PORT: &port 80
-    AUTHELIA_SESSION_DOMAIN: toolstowelsandfroods.com
-    AUTHELIA_SESSION_NAME: authelia-home-ops
-    AUTHELIA_SESSION_REDIS_DATABASE_INDEX: 14
-    AUTHELIA_SESSION_REDIS_HOST: redis.redis.svc.cluster.local
-    AUTHELIA_TELEMETRY_METRICS_ADDRESS: tcp://0.0.0.0:8080
-    AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
-    AUTHELIA_THEME: dark
-    AUTHELIA_TOTP_ISSUER: authelia.com
-    AUTHELIA_WEBAUTHN_DISABLE: "true"
+  envFrom:
+    - secretRef:
+        name: authelia-secrets
   enableServiceLinks: false
   service:
     main:
@@ -82,6 +56,12 @@ app-template:
         hajimari.io/icon: lock
         hajimari.io/appName: Authelia
         hajimari.io/info: Authentication and authorization, MFA and SSO
+        nginx.ingress.kubernetes.io/auth-method: GET
+        nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.example.com?rm=$request_method
+        nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+        nginx.ingress.kubernetes.io/auth-snippet: |
+          proxy_set_header X-Forwarded-Method $request_method;
       hosts:
         - host: &host auth.toolstowelsandfroods.com
           paths:
@@ -92,15 +72,6 @@ app-template:
           hosts:
           - *host
   domain: auth.toolstowelsandfroods.com
-  password:
-    external:
-      name: authelia-secrets
-      key: bind_password
-
-  jwt_secret:
-    external:
-      name: authelia-secrets
-      key: jwt_secret
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
@@ -109,9 +80,11 @@ app-template:
   persistence:
     config:
       enabled: true
-      storageClass: longhorn
-      accessMode: ReadWriteMany
-      size: 1Gi
+      type: configMap
+      name: authelia-config
+      subPath: config.yaml
+      mountPath: /etc/authelia/config.yaml
+      readOnly: false
     db:
       enabled: true
       existingClaim: authelia
