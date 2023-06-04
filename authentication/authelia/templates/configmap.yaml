@@ -6,9 +6,7 @@ data:
   config.yaml: |-
     theme: auto
     default_2fa_method: totp
-    jwt_secret: "{{ .Values.authelia.jwtSecret }}"
     storage:
-      encryption_key: "{{ .Values.authelia.encryptionKey }}"
       local:
         path: /db/db.sqlite3
     authentication_backend:
@@ -19,7 +17,7 @@ data:
         url: ldap://lldap.lldap.svc.cluster.local:3890
         timeout: 5s
         start_tls: false
-        base_dn: "{{ .Values.authelia.baseDN }}"
+        base_dn: dc=home
         additional_users_dn: OU=users
         users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
         username_attribute: uid
@@ -27,8 +25,6 @@ data:
         display_name_attribute: givenName
         groups_filter: (&(memberUid={username})(objectClass=posixGroup))
         group_name_attribute: cn
-        user: "{{ .Values.authelia.user }}"
-        password: "{{ .Values.authelia.password }}"
 
     access_control:
       default_policy: one_factor
