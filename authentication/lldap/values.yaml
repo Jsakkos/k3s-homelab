@@ -11,7 +11,7 @@ app-template:
     LLDAP_HTTP_PORT: &http-port 80
     LLDAP_LDAP_PORT: &ldap-port 3890
     LLDAP_HTTP_URL: https://lldap.toolstowelsandfroods.com
-#    LLDAP_LDAP_BASE_DN: dc=home,dc=arpa
+    LLDAP_LDAP_BASE_DN: dc=home,dc=lldap
   envFrom:
     - secretRef:
         name: lldap-secret
