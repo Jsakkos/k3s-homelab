@@ -6,7 +6,17 @@ data:
   config.yaml: |-
     theme: auto
     default_2fa_method: totp
+    jwt_secret:
+      valueFrom:
+        secretKeyRef:
+          name: authelia-secrets
+          key: jwt_secret
     storage:
+      encryption_key:
+        valueFrom:
+          secretKeyRef:
+            name: authelia-secrets
+            key: encryption_key
       local:
         path: /db/db.sqlite3
     authentication_backend:
@@ -25,6 +35,12 @@ data:
         display_name_attribute: givenName
         groups_filter: (&(memberUid={username})(objectClass=posixGroup))
         group_name_attribute: cn
+        user: admin
+        password:
+          valueFrom:
+            secretKeyRef:
+              name: authelia-secrets
+              key: password
 
     access_control:
       default_policy: one_factor
@@ -32,10 +48,13 @@ data:
         - name: internal
           networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
     session:
+      secret:
+        valueFrom:
+          secretKeyRef:
+            name: authelia-secrets
+            key: session_secret
       redis:
         host: redis.redis.svc.cluster.local
-        database:
-          index: 14
     notifier:
       disable_startup_check: false
       filesystem:
