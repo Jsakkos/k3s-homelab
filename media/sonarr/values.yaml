@@ -40,6 +40,15 @@ app-template:
         hajimari.io/icon: television
         hajimari.io/appName: Sonarr
         hajimari.io/info: TV show collection manager for Usenet and BitTorrent users
+      hosts:
+       - host: &host shows.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: sonarr-tls-certificate
+          hosts:
+            - *host
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
