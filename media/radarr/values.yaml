@@ -20,6 +20,7 @@ app-template:
       enabled: true
       ingressClassName: nginx
       annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
         hajimari.io/enable: "true"
         hajimari.io/icon: filmstrip
         hajimari.io/appName: Radarr
