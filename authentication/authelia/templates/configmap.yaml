@@ -51,6 +51,8 @@ data:
       metrics:
         enabled: true
         address: "tcp://0.0.0.0:8080"
-  envFrom:
-    - secretRef:
-        name: authelia-secrets
+    name: jwt_secret
+      valueFrom:
+        secretKeyRef:
+          name: authelia-secrets
+          key: jwt_secret
