@@ -35,6 +35,7 @@ data:
     session:
       redis:
         host: redis.redis.svc.cluster.local
+        port: 26379
     notifier:
       disable_startup_check: false
       filesystem:
