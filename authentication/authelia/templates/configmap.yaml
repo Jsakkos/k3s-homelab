@@ -6,13 +6,13 @@ data:
   config.yaml: |-
     theme: auto
     default_2fa_method: totp
-    jwt_secret:
+    - name: jwt_secret
       valueFrom:
         secretKeyRef:
           name: authelia-secrets
           key: jwt_secret
     storage:
-      encryption_key:
+      - name: encryption_key
         valueFrom:
           secretKeyRef:
             name: authelia-secrets
@@ -36,7 +36,7 @@ data:
         groups_filter: (&(memberUid={username})(objectClass=posixGroup))
         group_name_attribute: cn
         user: admin
-        password:
+        - name: password
           valueFrom:
             secretKeyRef:
               name: authelia-secrets
@@ -48,7 +48,7 @@ data:
         - name: internal
           networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
     session:
-      secret:
+      - name: secret
         valueFrom:
           secretKeyRef:
             name: authelia-secrets
