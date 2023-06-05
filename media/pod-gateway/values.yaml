@@ -8,22 +8,22 @@ pod-gateway:
     tag: v1.8.1
   DNS: 172.16.1.1
   addons:
-    vpn:
-      enabled: true
-      type: gluetun
-      image:
-        repository: ghcr.io/qdm12/gluetun
-        tag: v3.34.3
-      env:
-        - name: VPN_SERVICE_PROVIDER
-          value: nordvpn
-        - name: SERVER_REGIONS
-          value: California
-        - name: LOG_LEVEL
-          value: debug
-      envFrom:
-        - secretRef:
-            name: nordvpn-secrets
+#     vpn:
+#       enabled: true
+#       type: gluetun
+#       image:
+#         repository: ghcr.io/qdm12/gluetun
+#         tag: v3.34.3
+#       env:
+#         - name: VPN_SERVICE_PROVIDER
+#           value: nordvpn
+#         - name: SERVER_REGIONS
+#           value: California
+#         - name: LOG_LEVEL
+#           value: debug
+#       envFrom:
+#         - secretRef:
+#             name: nordvpn-secrets
  
     netshoot:
       enabled: true
