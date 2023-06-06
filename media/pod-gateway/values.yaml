@@ -17,6 +17,8 @@ pod-gateway:
       env:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn
+        - name: VPN_INTERFACE
+          value: tun0
         - name: SERVER_REGIONS
           value: United States
         - name: LOG_LEVEL
@@ -24,12 +26,28 @@ pod-gateway:
       envFrom:
         - secretRef:
             name: nordvpn-secrets
- 
+      networkPolicy:
+        enabled: true
+        egress:
+          - ports:
+            - port: 51820
+              protocol: UDP
+            to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+          - to:
+            - ipBlock:
+                cidr: 10.0.0.0/8
+      securityContext:
+        capabilities:
+          add:
+            - NET_ADMIN 
     netshoot:
       enabled: true
 
   settings:
     NOT_ROUTED_TO_GATEWAY_CIDRS: 10.0.0.0/8 192.168.0.0/16
+    VPN_INTERFACE: tun0
     VPN_BLOCK_OTHER_TRAFFIC: true
     VPN_LOCAL_CIDRS: 10.0.0.0/8 192.168.0.0/16
     VPN_TRAFFIC_PORT: "51820"
