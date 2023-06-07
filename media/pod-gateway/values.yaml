@@ -44,7 +44,15 @@ pod-gateway:
             - NET_ADMIN 
     netshoot:
       enabled: true
-
+      
+  publicPorts:
+    - IP: 10
+      hostname: qbittorrent-0
+      ports:
+        - port: 57464
+          type: udp
+        - port: 57464
+          type: tcp
   settings:
     NOT_ROUTED_TO_GATEWAY_CIDRS: 10.0.0.0/8 192.168.0.0/16
     VPN_INTERFACE: tun0
@@ -56,6 +64,9 @@ pod-gateway:
 
   routed_namespaces:
     - media
+    - qbittorrent
+    - prowlarr
+    - sabnzbd
   webhook:
     gatewayDefault: false
     image:
