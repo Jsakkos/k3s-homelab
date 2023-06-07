@@ -33,7 +33,7 @@ data:
         - name: internal
           networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
     session:
-      name: authelia_session
+      cookies:
       redis:
         host: redis.redis.svc.cluster.local
         port: 26379

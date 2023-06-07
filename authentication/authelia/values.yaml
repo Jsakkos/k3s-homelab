@@ -71,7 +71,7 @@ app-template:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
-  domain: auth.toolstowelsandfroods.com
+  domain: toolstowelsandfroods.com
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
