@@ -54,11 +54,14 @@ authelia:
         url: ldap://lldap.lldap.svc.cluster.local:3890
         base_dn: DC=auth,DC=toolstowelsandfroods,DC=com
         username_attribute: uid
-        mail_attribute: mail
-        display_name_attribute: givenName
-        user: cn=admin,ou=people,dc=auth,dc=toolstowelsandfroods,dc=com
+        additional_users_dn: OU=people
         users_filter: (&({username_attribute}={input})(objectClass=person))
+        additional_groups_dn: OU=groups
         groups_filter: (member={dn})
+        group_name_attribute: cn
+        mail_attribute: mail
+        display_name_attribute: displayName
+        user: UID=authelia,OU=people,DC=auth,DC=toolstowelsandfroods,DC=com
     access_control:
       default_policy: one_factor
       networks:
@@ -74,7 +77,6 @@ authelia:
       postgres:
         enabled: false
   notifier:
+    disable_startup_check: false
     filesystem:
-      enabled: true
-    smtp:
-      enabled: false
+      filename: /config/notification.txt
