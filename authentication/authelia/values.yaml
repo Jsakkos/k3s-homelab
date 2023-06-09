@@ -52,7 +52,7 @@ authelia:
       ldap:
         implementation: custom
         url: ldap://lldap.lldap.svc.cluster.local:3890
-        base_dn: DC=toolstowelsandfroods,DC=home,DC=com
+        base_dn: DC=toolstowelsandfroods,DC=com
         users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
         username_attribute: uid
         mail_attribute: mail
