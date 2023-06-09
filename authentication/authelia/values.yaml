@@ -28,6 +28,9 @@ authelia:
   env:
   - name: TZ
     value: America/Los_Angeles
+  envFrom:
+    - secretRef:
+        name: authelia-secrets
   resources:
     requests:
       cpu: "0.25"
@@ -71,79 +74,4 @@ authelia:
         enabled: true
       postgres:
         enabled: false
-  secret:
-    vaultInjector:
-      enabled: true
-    Annotation: vault.hashicorp.com/role
-    agent:
-      Annotation: vault.hashicorp.com/agent-inject-status
 
-      Annotation: vault.hashicorp.com/agent-init-first
-      initFirst: "true"
-
-      Annotation: vault.hashicorp.com/agent-inject-command
-      command: "sh -c 'kill HUP $(pidof authelia)'"
-
-      ## Annotation: vault.hashicorp.com/agent-run-as-same-user
-      runAsSameUser: "true"
-    secrets:
-      jwt:
-        ## Vault Path to the Authelia JWT secret.
-        Annotation: vault.hashicorp.com/agent-inject-secret-jwt
-        path: secrets/secret/authelia/jwt:token
-
-        ## Vault template specific to JWT.
-        Annotation: vault.hashicorp.com/agent-inject-template-jwt
-        templateValue: ""
-
-        ## Vault after render command specific to JWT.
-        Annotation: vault.hashicorp.com/agent-inject-command-jwt
-        command: ""
-      ldap:
-        ## Vault Path to the Authelia LDAP secret.
-        Annotation: vault.hashicorp.com/agent-inject-secret-ldap
-        path: secrets/secret/authelia/ldap:password
-
-        ## Vault template specific to LDAP.
-        Annotation: vault.hashicorp.com/agent-inject-template-ldap
-        templateValue: ""
-
-        ## Vault after render command specific to LDAP.
-        Annotation: vault.hashicorp.com/agent-inject-command-ldap
-        command: ""
-      storage:
-        ## Vault Path to the Authelia storage password secret.
-        Annotation: vault.hashicorp.com/agent-inject-secret-storage
-        path: secrets/secret/authelia/storage:password
-
-        ## Vault template specific to the storage password.
-        Annotation: vault.hashicorp.com/agent-inject-template-storage
-        templateValue: ""
-
-        ## Vault after render command specific to the storage password.
-        Annotation: vault.hashicorp.com/agent-inject-command-storage
-        command: ""
-      storageEncryptionKey:
-        ## Vault Path to the Authelia storage encryption key secret.
-        Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
-        path: secrets/secret/authelia/storage:encryption_key
-
-        ## Vault template specific to the storage encryption key.
-        Annotation: vault.hashicorp.com/agent-inject-template-storage-encryption-key
-        templateValue: ""
-
-        ## Vault after render command specific to the storage encryption key.
-        Annotation: vault.hashicorp.com/agent-inject-command-storage-encryption-key
-        command: ""
-      session:
-        ## Vault Path to the Authelia session secret.
-        Annotation: vault.hashicorp.com/agent-inject-secret-session
-        path: secrets/secret/authelia/session:encryption_key
-
-        ## Vault template specific to session.
-        Annotation: vault.hashicorp.com/agent-inject-template-session
-        templateValue: ""
-
-        ## Vault after render command specific to session.
-        Annotation: vault.hashicorp.com/agent-inject-command-session
-        command: ""
