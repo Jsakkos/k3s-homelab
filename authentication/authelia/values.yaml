@@ -56,7 +56,7 @@ authelia:
         username_attribute: uid
         mail_attribute: mail
         display_name_attribute: givenName
-        user: cn=admin,ou=people,dc=toolstowelsandfroods,dc=com
+        user: cn=admin,ou=people,dc=auth,dc=toolstowelsandfroods,dc=com
         users_filter: (&({username_attribute}={input})(objectClass=person))
         groups_filter: (member={dn})
     access_control:
