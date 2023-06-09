@@ -58,7 +58,6 @@ authelia:
         mail_attribute: mail
         display_name_attribute: givenName
         groups_filter: (&(memberUid={username})(objectClass=posixGroup))
-        group_name_attribute: cn
         user: admin
     access_control:
       default_policy: one_factor
@@ -74,4 +73,5 @@ authelia:
         enabled: true
       postgres:
         enabled: false
-
+  notifier:
+    disable_startup_check: true
