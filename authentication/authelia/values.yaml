@@ -35,7 +35,8 @@ authelia:
     limits:
       cpu: "4.00"
       memory: 120Mi
-
+  rbac:
+    enabled: true
   configMap:
 
     default_2fa_method: totp
@@ -74,14 +75,64 @@ authelia:
     vaultInjector:
       enabled: true
 
-      secrets:
-        jwt:
-          Annotation: vault.hashicorp.com/agent-inject-secret-jwt
-        ldap:
-          Annotation: vault.hashicorp.com/agent-inject-secret-ldap
-        storage:
-          Annotation: vault.hashicorp.com/agent-inject-secret-storage
-        storageEncryptionKey:
-          Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
-        session:
-          Annotation: vault.hashicorp.com/agent-inject-secret-session
+    secrets:
+      jwt:
+        ## Vault Path to the Authelia JWT secret.
+        Annotation: vault.hashicorp.com/agent-inject-secret-jwt
+        path: secrets/authelia/jwt:token
+
+        ## Vault template specific to JWT.
+        Annotation: vault.hashicorp.com/agent-inject-template-jwt
+        templateValue: ""
+
+        ## Vault after render command specific to JWT.
+        Annotation: vault.hashicorp.com/agent-inject-command-jwt
+        command: ""
+      ldap:
+        ## Vault Path to the Authelia LDAP secret.
+        Annotation: vault.hashicorp.com/agent-inject-secret-ldap
+        path: secrets/authelia/ldap:password
+
+        ## Vault template specific to LDAP.
+        Annotation: vault.hashicorp.com/agent-inject-template-ldap
+        templateValue: ""
+
+        ## Vault after render command specific to LDAP.
+        Annotation: vault.hashicorp.com/agent-inject-command-ldap
+        command: ""
+      storage:
+        ## Vault Path to the Authelia storage password secret.
+        Annotation: vault.hashicorp.com/agent-inject-secret-storage
+        path: secrets/authelia/storage:password
+
+        ## Vault template specific to the storage password.
+        Annotation: vault.hashicorp.com/agent-inject-template-storage
+        templateValue: ""
+
+        ## Vault after render command specific to the storage password.
+        Annotation: vault.hashicorp.com/agent-inject-command-storage
+        command: ""
+      storageEncryptionKey:
+        ## Vault Path to the Authelia storage encryption key secret.
+        Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
+        path: secrets/authelia/storage:encryption_key
+
+        ## Vault template specific to the storage encryption key.
+        Annotation: vault.hashicorp.com/agent-inject-template-storage-encryption-key
+        templateValue: ""
+
+        ## Vault after render command specific to the storage encryption key.
+        Annotation: vault.hashicorp.com/agent-inject-command-storage-encryption-key
+        command: ""
+      session:
+        ## Vault Path to the Authelia session secret.
+        Annotation: vault.hashicorp.com/agent-inject-secret-session
+        path: secrets/authelia/session:encryption_key
+
+        ## Vault template specific to session.
+        Annotation: vault.hashicorp.com/agent-inject-template-session
+        templateValue: ""
+
+        ## Vault after render command specific to session.
+        Annotation: vault.hashicorp.com/agent-inject-command-session
+        command: ""
