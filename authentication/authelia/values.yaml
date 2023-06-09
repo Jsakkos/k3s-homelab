@@ -74,7 +74,18 @@ authelia:
   secret:
     vaultInjector:
       enabled: true
+    Annotation: vault.hashicorp.com/role
+    agent:
+      Annotation: vault.hashicorp.com/agent-inject-status
 
+      Annotation: vault.hashicorp.com/agent-init-first
+      initFirst: "true"
+
+      Annotation: vault.hashicorp.com/agent-inject-command
+      command: "sh -c 'kill HUP $(pidof authelia)'"
+
+      ## Annotation: vault.hashicorp.com/agent-run-as-same-user
+      runAsSameUser: "true"
     secrets:
       jwt:
         ## Vault Path to the Authelia JWT secret.
