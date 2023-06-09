@@ -79,7 +79,7 @@ authelia:
       jwt:
         ## Vault Path to the Authelia JWT secret.
         Annotation: vault.hashicorp.com/agent-inject-secret-jwt
-        path: secrets/authelia/jwt:token
+        path: secrets/secret/authelia/jwt:token
 
         ## Vault template specific to JWT.
         Annotation: vault.hashicorp.com/agent-inject-template-jwt
@@ -91,7 +91,7 @@ authelia:
       ldap:
         ## Vault Path to the Authelia LDAP secret.
         Annotation: vault.hashicorp.com/agent-inject-secret-ldap
-        path: secrets/authelia/ldap:password
+        path: secrets/secret/authelia/ldap:password
 
         ## Vault template specific to LDAP.
         Annotation: vault.hashicorp.com/agent-inject-template-ldap
@@ -103,7 +103,7 @@ authelia:
       storage:
         ## Vault Path to the Authelia storage password secret.
         Annotation: vault.hashicorp.com/agent-inject-secret-storage
-        path: secrets/authelia/storage:password
+        path: secrets/secret/authelia/storage:password
 
         ## Vault template specific to the storage password.
         Annotation: vault.hashicorp.com/agent-inject-template-storage
@@ -115,7 +115,7 @@ authelia:
       storageEncryptionKey:
         ## Vault Path to the Authelia storage encryption key secret.
         Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
-        path: secrets/authelia/storage:encryption_key
+        path: secrets/secret/authelia/storage:encryption_key
 
         ## Vault template specific to the storage encryption key.
         Annotation: vault.hashicorp.com/agent-inject-template-storage-encryption-key
@@ -127,7 +127,7 @@ authelia:
       session:
         ## Vault Path to the Authelia session secret.
         Annotation: vault.hashicorp.com/agent-inject-secret-session
-        path: secrets/authelia/session:encryption_key
+        path: secrets/secret/authelia/session:encryption_key
 
         ## Vault template specific to session.
         Annotation: vault.hashicorp.com/agent-inject-template-session
