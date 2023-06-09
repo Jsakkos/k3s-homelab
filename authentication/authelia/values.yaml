@@ -1,51 +1,5 @@
-app-template:
-  controller:
-    annotations:
-      reloader.stakater.com/auto: "true"
-    type: statefulset
-  image:
-    repository: ghcr.io/authelia/authelia
-    # TODO Switch to Authelia release tag on next release
-    tag: master@sha256:cc12c2b96ea0af84782ca740ea30d45582c5d801be4633aefc8565ccb4172f87
-  args: ["--config", "/etc/authelia/config.yaml"]
-  env:
-    TZ: America/Los_Angeles
-  envFrom:
-    - secretRef:
-        name: authelia-secrets
-  enableServiceLinks: false
-  service:
-    main:
-      ports:
-        http:
-          port: &port 80
-        metrics:
-          enabled: true
-          port: 8080
-  probes:
-    liveness: &probes
-      enabled: true
-      custom: true
-      spec:
-        httpGet:
-          path: /api/health
-          port: *port
-        initialDelaySeconds: 0
-        periodSeconds: 10
-        timeoutSeconds: 1
-        failureThreshold: 3
-    readiness: *probes
-    startup:
-      enabled: false
-  serviceMonitor:
-    main:
-      enabled: true
-      endpoints:
-        - port: metrics
-          scheme: http
-          path: /metrics
-          interval: 1m
-          scrapeTimeout: 10s
+authelia:
+  domain: toolstowelsandfroods.com
   ingress:
     main:
       enabled: true
@@ -57,7 +11,7 @@ app-template:
         hajimari.io/appName: Authelia
         hajimari.io/info: Authentication and authorization, MFA and SSO
         nginx.ingress.kubernetes.io/auth-method: GET
-        nginx.ingress.kubernetes.io/auth-url: http://authelia.default.svc.cluster.local/api/verify
+        nginx.ingress.kubernetes.io/auth-url: http://authelia.authelia.svc.cluster.local/api/verify
         nginx.ingress.kubernetes.io/auth-signin: https://auth.example.com?rm=$request_method
         nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
         nginx.ingress.kubernetes.io/auth-snippet: |
@@ -71,26 +25,70 @@ app-template:
         - secretName: authelia-tls-certificate
           hosts:
           - *host
-  domain: toolstowelsandfroods.com
-  podSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-    fsGroupChangePolicy: "OnRootMismatch"
-  persistence:
-    config:
-      enabled: true
-      type: configMap
-      name: authelia-config
-      subPath: config.yaml
-      mountPath: /etc/authelia/config.yaml
-      readOnly: false
-    db:
-      enabled: true
-      existingClaim: authelia
+  env:
+  - name: TZ
+    value: America/Los_Angeles
+  envFrom:
+    - secretRef:
+        name: authelia-secrets
   resources:
     requests:
-      cpu: 10m
-      memory: 250Mi
+      cpu: "0.25"
+      memory: 50Mi
     limits:
-      memory: 1000Mi
+      cpu: "4.00"
+      memory: 120Mi
+
+  configMap:
+
+    default_2fa_method: totp
+    storage:
+      local:
+        path: /db/db.sqlite3
+    authentication_backend:
+      password_reset:
+        disable: true
+      ldap:
+        implementation: custom
+        url: ldap://lldap.lldap.svc.cluster.local:3890
+        base_dn: DC=toolstowelsandfroods,DC=home,DC=com
+        users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
+        username_attribute: uid
+        mail_attribute: mail
+        display_name_attribute: givenName
+        groups_filter: (&(memberUid={username})(objectClass=posixGroup))
+        group_name_attribute: cn
+        user: admin
+    access_control:
+      default_policy: one_factor
+      networks:
+        - name: internal
+          networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+    session:
+      redis:
+        host: redis.redis.svc.cluster.local
+        port: 26379
+    storage:
+      local:
+        enabled: true
+      postgres:
+        enabled: false
+  secret:
+    ldap:
+      key: LDAP_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: authelia-secrets
+            key: AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD
+    vaultInjector:
+      enabled: true
+
+      secrets:
+        jwt:
+          Annotation: vault.hashicorp.com/agent-inject-secret-jwt
+      storage:
+        Annotation: vault.hashicorp.com/agent-inject-secret-storage
+      storageEncryptionKey:
+        Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
+      session:
+        Annotation: vault.hashicorp.com/agent-inject-secret-session
