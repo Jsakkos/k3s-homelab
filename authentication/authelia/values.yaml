@@ -80,3 +80,4 @@ authelia:
     disable_startup_check: false
     filesystem:
       filename: /config/notification.txt
+    smtp: {}
