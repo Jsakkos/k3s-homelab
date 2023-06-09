@@ -53,11 +53,9 @@ authelia:
         implementation: custom
         url: ldap://lldap.lldap.svc.cluster.local:3890
         base_dn: DC=toolstowelsandfroods,DC=com
-        users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
         username_attribute: uid
         mail_attribute: mail
         display_name_attribute: givenName
-        groups_filter: (&(memberUid={username})(objectClass=posixGroup))
         user: admin
     access_control:
       default_policy: one_factor
@@ -74,4 +72,7 @@ authelia:
       postgres:
         enabled: false
   notifier:
-    disable_startup_check: true
+    filesystem:
+      enabled: true
+    smtp:
+      enabled: false
