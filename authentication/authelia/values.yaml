@@ -57,6 +57,8 @@ authelia:
         mail_attribute: mail
         display_name_attribute: givenName
         user: admin
+        users_filter: (&({username_attribute}={input})(objectClass=person))
+        groups_filter: (member={dn})
     access_control:
       default_policy: one_factor
       networks:
