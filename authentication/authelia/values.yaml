@@ -28,9 +28,6 @@ authelia:
   env:
   - name: TZ
     value: America/Los_Angeles
-  envFrom:
-    - secretRef:
-        name: authelia-secrets
   resources:
     requests:
       cpu: "0.25"
@@ -74,21 +71,17 @@ authelia:
       postgres:
         enabled: false
   secret:
-    ldap:
-      key: LDAP_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: authelia-secrets
-            key: AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD
     vaultInjector:
       enabled: true
 
       secrets:
         jwt:
           Annotation: vault.hashicorp.com/agent-inject-secret-jwt
-      storage:
-        Annotation: vault.hashicorp.com/agent-inject-secret-storage
-      storageEncryptionKey:
-        Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
-      session:
-        Annotation: vault.hashicorp.com/agent-inject-secret-session
+        ldap:
+          Annotation: vault.hashicorp.com/agent-inject-secret-ldap
+        storage:
+          Annotation: vault.hashicorp.com/agent-inject-secret-storage
+        storageEncryptionKey:
+          Annotation: vault.hashicorp.com/agent-inject-secret-storage-encryption-key
+        session:
+          Annotation: vault.hashicorp.com/agent-inject-secret-session
