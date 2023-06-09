@@ -68,7 +68,7 @@ authelia:
     session:
       redis:
         host: redis.redis.svc.cluster.local
-        port: 26379
+        port: 6379
     storage:
       local:
         enabled: true
