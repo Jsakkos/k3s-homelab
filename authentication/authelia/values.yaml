@@ -76,8 +76,8 @@ authelia:
         enabled: true
       postgres:
         enabled: false
-  notifier:
-    disable_startup_check: false
-    filesystem:
-      filename: /config/notification.txt
-    smtp: {}
+    notifier:
+      smtp:
+          sender: admin@toolstowelsandfroods.com
+          host: smtp.gmail.com
+        port: 587
