@@ -52,7 +52,7 @@ authelia:
       ldap:
         implementation: custom
         url: ldap://lldap.lldap.svc.cluster.local:3890
-        base_dn: DC=auth,DC=toolstowelsandfroods,DC=com
+        base_dn: DC=toolstowelsandfroods,DC=com
         username_attribute: uid
         additional_users_dn: OU=people
         users_filter: (&({username_attribute}={input})(objectClass=person))
@@ -61,7 +61,7 @@ authelia:
         group_name_attribute: cn
         mail_attribute: mail
         display_name_attribute: displayName
-        user: UID=authelia,OU=people,DC=auth,DC=toolstowelsandfroods,DC=com
+        user: UID=admin,OU=people,DC=toolstowelsandfroods,DC=com
     access_control:
       default_policy: one_factor
       networks:
