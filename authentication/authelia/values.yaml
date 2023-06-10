@@ -78,6 +78,6 @@ authelia:
         enabled: false
     notifier:
       smtp:
-          sender: admin@toolstowelsandfroods.com
-          host: smtp.gmail.com
+        sender: admin@toolstowelsandfroods.com
+        host: smtp.gmail.com
         port: 587
