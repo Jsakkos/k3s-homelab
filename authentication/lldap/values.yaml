@@ -12,6 +12,7 @@ app-template:
     LLDAP_LDAP_PORT: &ldap-port 3890
     LLDAP_HTTP_URL: https://lldap.toolstowelsandfroods.com
     LLDAP_LDAP_BASE_DN: dc=toolstowelsandfroods,dc=com
+    LLDAP_USER_DN: admin
     LLDAP_VERBOSE: true
   envFrom:
     - secretRef:
