@@ -41,7 +41,8 @@ authelia:
   rbac:
     enabled: true
   configMap:
-
+    log:
+      level: trace
     default_2fa_method: totp
     storage:
       local:
