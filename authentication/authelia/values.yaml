@@ -84,3 +84,5 @@ authelia:
         filename: /config/notification.txt
       smtp:
         enabled: false
+  secret:
+    existingSecret: authelia-secrets
