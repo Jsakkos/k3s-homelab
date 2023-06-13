@@ -15,7 +15,7 @@ authelia:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: authelia-tls-certificate
+      - secret: authelia-tls-certificate
         hosts:
           - *host
   env:
