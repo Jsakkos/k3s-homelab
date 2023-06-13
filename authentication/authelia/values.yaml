@@ -17,6 +17,8 @@ authelia:
     tls:
       enabled: true
       secret: authelia-tls-certificate
+      hosts:
+        - *host
   env:
   - name: TZ
     value: America/Los_Angeles
