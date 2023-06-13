@@ -15,9 +15,8 @@ authelia:
           - path: /
             pathType: Prefix
     tls:
-      - secret: authelia-tls-certificate
-        hosts:
-          - *host
+      enabled: true
+      secret: authelia-tls-certificate
   env:
   - name: TZ
     value: America/Los_Angeles
