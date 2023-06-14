@@ -1,5 +1,7 @@
 authelia:
   domain: toolstowelsandfroods.com
+  service:
+    type: LoadBalancer
   ingress:
     enabled: true
     ingressClassName: nginx
