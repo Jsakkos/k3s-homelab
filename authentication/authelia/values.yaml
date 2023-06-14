@@ -22,6 +22,8 @@ authelia:
     tls:
       enabled: true
       secret: authelia-tls-certificate
+  pod:
+    kind: StatefulSet
   env:
   - name: TZ
     value: America/Los_Angeles
