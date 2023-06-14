@@ -6,7 +6,7 @@ app-template:
   image:
     repository: ghcr.io/authelia/authelia
     tag: 4.37.5
-  args: ["--config", "/config/configuration.yml", "--config.experimental.filters", "expand-env"]
+  args: ["--config", "/config/configuration.yml", "expand-env"]
   domain: toolstowelsandfroods.com+
   enableServiceLinks: false
   service:
