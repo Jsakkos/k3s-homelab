@@ -3,11 +3,6 @@ authelia:
   service:
     type: LoadBalancer
     externalTrafficPolicy: Local
-    ports:
-      - port: 80
-        name: http
-      - port: 443
-        name: https
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -30,6 +25,7 @@ authelia:
   envFrom:
     - secretRef:
         name: authelia-secrets
+  enableServiceLinks: false
   resources:
     requests:
       cpu: "0.25"
