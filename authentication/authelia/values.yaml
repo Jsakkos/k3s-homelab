@@ -19,18 +19,22 @@ app-template:
   ingress:
     main:
       enabled: true
-      ingressClassName: nginx
+      ingressClassName: "nginx"
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
-        kubernetes.io/tls-acme: "true"
         hajimari.io/enable: "true"
         hajimari.io/icon: lock
         hajimari.io/appName: Authelia
         hajimari.io/info: Authentication and authorization, MFA and SSO
-      subdomain: auth
+      hosts:
+        - host: &host auth.toolstowelsandfroods.com
+          paths:
+            - path: /
+
       tls:
-        enabled: true
-        secret: authelia-tls-certificate
+        - secretName: authelia-tls-certificate
+          hosts:
+            - *host
   env:
   - name: TZ
     value: America/Los_Angeles
