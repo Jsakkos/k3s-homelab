@@ -1,24 +1,36 @@
-authelia:
+app-template:
   domain: toolstowelsandfroods.com
-  service:
-    type: LoadBalancer
-    externalTrafficPolicy: Local
-  ingress:
-    enabled: true
-    ingressClassName: nginx
+  controller:
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      kubernetes.io/tls-acme: "true"
-      hajimari.io/enable: "true"
-      hajimari.io/icon: lock
-      hajimari.io/appName: Authelia
-      hajimari.io/info: Authentication and authorization, MFA and SSO
-    subdomain: auth
-    tls:
+      reloader.stakater.com/auto: "true"
+    type: statefulset
+  image:
+    repository: ghcr.io/authelia/authelia
+    # TODO Switch to Authelia release tag on next release
+    tag: master@sha256:9ec88ac73269855f3a0e0b80ed6ee4980decd81fb12901ff39cd9d8d2cf9b6fc
+  service:
+    main:
+      ports:
+        http:
+          port: &port 80
+        metrics:
+          enabled: true
+          port: 8080
+  ingress:
+    main:
       enabled: true
-      secret: authelia-tls-certificate
-  pod:
-    kind: StatefulSet
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        kubernetes.io/tls-acme: "true"
+        hajimari.io/enable: "true"
+        hajimari.io/icon: lock
+        hajimari.io/appName: Authelia
+        hajimari.io/info: Authentication and authorization, MFA and SSO
+      subdomain: auth
+      tls:
+        enabled: true
+        secret: authelia-tls-certificate
   env:
   - name: TZ
     value: America/Los_Angeles
