@@ -42,5 +42,6 @@ data:
         host: smtp.gmail.com
         port: 465
         sender: "Authelia"
-
+    server:
+      port: 80
 
