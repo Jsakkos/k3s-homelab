@@ -7,9 +7,6 @@ data:
     log:
       level: trace
     default_2fa_method: totp
-    storage:
-      local:
-        path: /db/db.sqlite3
     authentication_backend:
       password_reset:
         disable: true
