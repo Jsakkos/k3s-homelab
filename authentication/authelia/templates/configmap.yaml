@@ -4,6 +4,9 @@ metadata:
   name: authelia-config
 data:
   config.yaml: |-
+    storage:
+      local:
+        path: /db/db.sqlite3
     log:
       level: trace
     default_2fa_method: totp
