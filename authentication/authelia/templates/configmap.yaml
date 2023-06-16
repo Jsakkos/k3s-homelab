@@ -35,3 +35,10 @@ data:
       redis:
         host: redis.redis.svc.cluster.local
         port: 6379
+    notifier:
+      disable_startup_check: true
+      filesystem:
+        enabled: true
+        filename: /config/notification.txt
+      smtp:
+        enabled: false
