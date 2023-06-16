@@ -52,8 +52,8 @@ app-template:
       memory: 120Mi
   rbac:
     enabled: true
-  secret:
-    existingSecret: authelia-secrets
+ # secret:
+ #   existingSecret: authelia-secrets
   persistence:
     config:
       enabled: true
