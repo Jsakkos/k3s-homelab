@@ -37,7 +37,7 @@ data:
         host: redis.redis.svc.cluster.local
         port: 6379
     notifier:
-      disable_startup_check: false
+      disable_startup_check: true
       smtp:
         host: smtp.gmail.com
         port: 465
