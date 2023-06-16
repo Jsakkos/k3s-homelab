@@ -37,7 +37,10 @@ data:
         host: redis.redis.svc.cluster.local
         port: 6379
     notifier:
-      disable_startup_check: true
-      filesystem:
-        filename: /config/notification.txt
+      disable_startup_check: false
+      smtp:
+        host: smtp.gmail.com
+        port: 465
+        sender: "Authelia"
+
 
