@@ -6,7 +6,7 @@ data:
   config.yaml: |-
     storage:
       local:
-        path: /db/db.sqlite3
+        path: /config/db.sqlite3
     log:
       level: trace
     default_2fa_method: totp
