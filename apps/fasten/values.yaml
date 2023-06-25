@@ -6,6 +6,7 @@ app-template:
     replicas: 1
   image:
     repository: ghcr.io/fastenhealth/fasten-onprem:sandbox
+    tag: 0.0.12
   service:
     main:
       enabled: true
