@@ -1,0 +1,33 @@
+app-template:
+  controller:
+    annotations:
+      reloader.stakater.com/auto: "true"
+    type: statefulset
+    replicas: 1
+  image:
+    repository: ghcr.io/fastenhealth/fasten-onprem:sandbox
+  service:
+    main:
+      enabled: true
+      ports:
+        http:
+          port: 8080
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/enable: "true"
+        hajimari.io/icon: heart-pulse
+        hajimari.io/appName: Fasten
+        hajimari.io/info: Fasten is an open-source, self-hosted, personal/family electronic medical record aggregator.
+      hosts:
+       - host: &host fasten.toolstowelsandfroods.com
+         paths:
+           - path: /
+             pathType: Prefix
+      tls:
+        - secretName: fasten-tls-certificate
+          hosts:
+            - *host  
