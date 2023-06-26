@@ -37,9 +37,16 @@ spec:
           value: recipes
         - name: POSTGRES_DB
           value: recipes
-        envFrom:
-          - secretRef:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
               name: recipes-secrets
+              key: postgresql-password
+        - name: POSTGRESQL_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: recipes-secrets
+              key: postgresql-postgres-password
         image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60
         imagePullPolicy: IfNotPresent
         livenessProbe:
