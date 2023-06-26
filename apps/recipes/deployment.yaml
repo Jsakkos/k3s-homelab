@@ -32,7 +32,7 @@ spec:
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
-                name: recipes
+                name: recipes-secrets
                 key: secret-key
           - name: DB_ENGINE
             value: django.db.backends.postgresql_psycopg2
@@ -47,7 +47,7 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: recipes
+                name: recipes-secrets
                 key: postgresql-postgres-password
         image: vabene1111/recipes
         imagePullPolicy: Always
@@ -157,7 +157,7 @@ spec:
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
-                name: recipes
+                name: recipes-secrets
                 key: secret-key
           - name: GUNICORN_MEDIA
             value: "0"
@@ -174,7 +174,7 @@ spec:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: recipes
+                name: recipes-secrets
                 key: postgresql-postgres-password
         securityContext:
           runAsUser: 65534
