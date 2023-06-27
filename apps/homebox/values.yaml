@@ -28,6 +28,7 @@ app-template:
         hajimari.io/enable: 'true'
         hajimari.io/icon: box
         hajimari.io/appName: Homebox
+        hajimari.io/group: Documents
         hajimari.io/info: Inventory and organization
         nginx.ingress.kubernetes.io/auth-method: GET
         nginx.ingress.kubernetes.io/auth-url: http://authelia.authelia.svc.cluster.local/api/verify
