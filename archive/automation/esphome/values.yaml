@@ -4,7 +4,7 @@ app-template:
     replicas: 1
   image:
     repository: esphome/esphome
-    tag: 2023.2.4
+    tag: 2023.12.9
   env:
     ESPHOME_DASHBOARD_USE_PING: true
   service:
