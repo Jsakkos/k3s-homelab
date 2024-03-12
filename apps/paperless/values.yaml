@@ -6,7 +6,7 @@ app-template:
     replicas: 1
   image:
     repository: ghcr.io/paperless-ngx/paperless-ngx
-    tag: 1.16.3
+    tag: 1.17.4
   env:
     COMPOSE_PROJECT_NAME: paperless
     PAPERLESS_CONSUMER_POLLING: "60"
@@ -92,11 +92,11 @@ app-template:
   sidecars:
     redis:
       name: redis
-      image: redis:7.0
+      image: redis:7.2
       imagePullPolicy: IfNotPresent
     gotenburg:
       name: gotenburg
-      image: thecodingmachine/gotenberg:7.8.0
+      image: thecodingmachine/gotenberg:7.10.2
       env:
         - name: DISABLE_GOOGLE_CHROME
           value: '1'
